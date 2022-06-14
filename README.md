@@ -6,6 +6,8 @@ ECI Notes
 
 ECI Notes es una aplicación web la cual le permitirá realizar apuntes colaborando en tiempo real junto a sus compañeros, esto con el fin de que sus apuntes sean más completos.
 
+También en caso de querer estos apuntes serán guardados en un repositorio global, con el fin de que otros usuarios de la ECI puedan usar estos.
+
 ## Descripción
 
 La toma de apuntes es una metodología básica a la hora de estudiar y repasar temas en las universidades, según Sandra Espino-Datsira en su estudio [La toma de apuntes. Visión de los estudiantes universitarios mexicanos](https://www.redalyc.org/jatsRepo/2991/299151245004/html/index.html) la mayoría de los estudiantes usa estos apuntes tal como lo podemos ver en la siguiente tabla.
@@ -20,7 +22,9 @@ En la universidad existen diferentes materias que son dictadas por distintos pro
 
 ### Solución
 
-Eci Notes llega a ser una alternativa para estos casos, en donde permite una colaboración sencilla entre un grupo de compañeros, con esto lograr además de fortalecer el trabajo en equipo, llegar a apuntes más completos.
+ECI Notes llega a ser una alternativa para estos casos, en donde permite una colaboración sencilla entre un grupo de compañeros, con esto lograr además de fortalecer el trabajo en equipo, llegar a apuntes más completos.
+
+Además de esto, si se decide compartir los apuntes con el resto de la comunidad, ayudaría al crecimiento de la comunidad.
 
 ## Historias de Usuario
 
@@ -54,10 +58,15 @@ Eci Notes llega a ser una alternativa para estos casos, en donde permite una col
 
   - Estos permisos deben ser por personas en concreto, o por link.
 
+- **COMO** administrador de cuadernillo **QUIERO** poder compartir mis apuntes en un repositorio global **PARA** que la comunidad ECI pueda usar mis apuntes
+
+  - Una vez se de a esta opción, se debe guardar en un repositorio global.
+  - Todos los usuarios de la ECI tendrán acceso a estos.
+
 ## Autor
 
 - **Juan Carlos Baez Lizarazo** - [juanbaezl](https://github.com/juanbaezl)
 
 ## Licencia
 
-Para más información ver: [LICENSE.txt](LICENSE.txt)
+Para más información ver: [LICENSE.txt](License.txt)
