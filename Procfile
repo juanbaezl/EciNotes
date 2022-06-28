@@ -1,0 +1,1 @@
+web: java -jar target/ECINotes-1.0.jar 
