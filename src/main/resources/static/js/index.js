@@ -1,3 +1,8 @@
+var sesiones = {
+  Juan: {username:'juan.baez-l', password:'juan123'},
+  Admin: {username:'admin', password:'admin123'} 
+};
+
 class NameForm extends React.Component {
   constructor(props) {
     super(props);
@@ -9,29 +14,6 @@ class NameForm extends React.Component {
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
   }
 
-  getName(){
-    fetch("/getname",{
-        method: 'GET',
-    }).then(res => res.json())
-    .then((result) => {
-        if(result.name != "null"){
-            this.setState({
-                isLoaded: true,
-                username: result.username,
-                password: result.password,
-            });
-        } else{
-            this.setState({
-                isLoaded: false,
-            });
-        }
-        },
-        (error) => {
-                console.log(error)
-        }
-    )
-  }
-
   handlePasswordChange(event) {
     this.setState({password: event.target.value});
   }
@@ -41,28 +23,29 @@ class NameForm extends React.Component {
   } 
 
   handleSubmit(event) {
-    fetch("/setname?"+ new URLSearchParams({
-    username: this.state.username,
-    password: this.state.password
-    }),{
-        method: 'GET',
-    }).then(res => res.json())
-    .then((result) => {
-        this.setState({
-            isLoaded: true,
-        });
-        },
-        (error) => {
-                console.log(error)
-        }
-    )
-    window.location.replace("/home.html");
+    for(var i in sesiones){
+      if(this.state.username==sesiones[i].username && this.state.password==sesiones[i].password){
+        sessionStorage.setItem('name',i);
+        sessionStorage.setItem('log',true);
+        window.location.href = "/home.html";
+      }
+    }
+    if(sessionStorage.getItem('log')==false){
+      alert("Datos erroneos");    
+    }
     event.preventDefault();
   }
 
+  UNSAFE_componentWillMount(){
+    console.log(sessionStorage.getItem('log'));
+    if(sessionStorage.getItem('log')=='true'){
+      window.location.href = "/home.html"
+    } else {
+      sessionStorage.setItem('log',false);
+    }
+  }
+
   render() {
-    this.getName();
-    if (!this.state.isLoaded || this.state.name == ''){
       return (
         <form className="formLogIn" onSubmit={this.handleSubmit}>
           <h1>Login</h1>
@@ -77,11 +60,6 @@ class NameForm extends React.Component {
           <input className="btn" type="submit" value="Submit" />
         </form>
       );
-    } else {
-      return(
-        window.location.replace("/home.html")
-      );
-    }
   }
 }
 ReactDOM.render(

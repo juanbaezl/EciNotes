@@ -32,25 +32,15 @@ public class WebSiteController {
                 + ". " + "The server is Running!\"}";
     }
 
-    @GetMapping("/delname")
-    public void delName() {
-        request.getSession().removeAttribute("name");
-        request.getSession().removeAttribute("password");
-    }
-
     @GetMapping("/setname")
-    public void setName(@RequestParam(value = "username", defaultValue = "Anónimo") String username,
-            @RequestParam(value = "password", defaultValue = "") String password) {
+    public void setName(@RequestParam(value = "username", defaultValue = "Anónimo") String username) {
         request.getSession().setAttribute("name", username);
-        request.getSession().setAttribute("password", password);
     }
 
     @GetMapping("/getname")
     public String getName() {
         String username = (String) request.getSession().getAttribute("name");
-        String password = (String) request.getSession().getAttribute("password");
-        return "{\"name\":\"" + username + "\",\n" +
-                "\"password\":\"" + password + "\"}";
+        return "{\"name\":\"" + username + "\"}";
     }
 
     public void sessionManagement() {
