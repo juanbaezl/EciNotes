@@ -1,13 +1,12 @@
 class NameForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {value: '',
-                  color: '#000000',
-                  response: '',
+    this.state = {username: '',
+                  password: '',
                   isLoaded: false};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleColorChange = this.handleColorChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
   }
 
   getName(){
@@ -18,14 +17,12 @@ class NameForm extends React.Component {
         if(result.name != "null"){
             this.setState({
                 isLoaded: true,
-                value: result.name,
-                color: result.color,
-                response: "Hello " + result.name + "!"
+                username: result.username,
+                password: result.password,
             });
         } else{
             this.setState({
                 isLoaded: false,
-                response: ""
             });
         }
         },
@@ -35,72 +32,55 @@ class NameForm extends React.Component {
     )
   }
 
-  handleColorChange(event) {
-    this.setState({color: event.target.value});
+  handlePasswordChange(event) {
+    this.setState({password: event.target.value});
   }
 
   handleChange(event) {
-    this.setState({value: event.target.value});
+    this.setState({username: event.target.value});
   } 
-
-  reset(event){
-    
-    fetch("/delname",{
-        method: 'GET',
-    }).then(this.setState({
-        isLoaded: false,
-        value: "",
-        response: "",
-        color:"#000000"
-    }))  
-    event.preventDefault();
-  }
 
   handleSubmit(event) {
     fetch("/setname?"+ new URLSearchParams({
-    name: this.state.value,
-    color: this.state.color
+    username: this.state.username,
+    password: this.state.password
     }),{
         method: 'GET',
     }).then(res => res.json())
     .then((result) => {
         this.setState({
             isLoaded: true,
-            response: result.response
         });
         },
         (error) => {
                 console.log(error)
         }
     )
+    window.location.replace("/home.html");
     event.preventDefault();
   }
 
   render() {
     this.getName();
-    if (!this.state.isLoaded){
+    if (!this.state.isLoaded || this.state.name == ''){
       return (
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Name: 
-            <input type="text" value={this.state.value} onChange={this.handleChange} />
-            <input type="color" value={this.state.color} onChange={this.handleColorChange}/>
-          </label>
-          <input type="submit" value="Submit" />
-          
+        <form className="formLogIn" onSubmit={this.handleSubmit}>
+          <h1>Login</h1>
+          <div className="divForm">
+            <label className="labelForm">Username</label>
+            <input className="inputForm" type="text" value={this.state.username} onChange={this.handleChange} />
+          </div>
+          <div className="divForm">
+            <label className="labelForm">Password</label>
+            <input className="inputForm" type="text" value={this.state.password} onChange={this.handlePasswordChange}/>
+          </div>
+          <input className="btn" type="submit" value="Submit" />
         </form>
       );
     } else {
       return(
-        <div>
-            <h1>{this.state.response}</h1>
-            <div><a href="/status.html">Server status</a></div>
-            <div><a href="/tablero.html">Tablero</a></div>
-            <form onSubmit={this.reset}>
-                <input type="submit" value="Salir"/>
-            </form>
-        </div>
-       );
+        window.location.replace("/home.html")
+      );
     }
   }
 }

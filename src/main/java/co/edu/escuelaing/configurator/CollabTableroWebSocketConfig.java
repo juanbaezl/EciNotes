@@ -1,4 +1,4 @@
-package co.edu.escuelaing;
+package co.edu.escuelaing.configurator;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

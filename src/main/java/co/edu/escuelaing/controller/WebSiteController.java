@@ -1,4 +1,4 @@
-package co.edu.escuelaing;
+package co.edu.escuelaing.controller;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -32,32 +32,25 @@ public class WebSiteController {
                 + ". " + "The server is Running!\"}";
     }
 
-    @GetMapping("/getcolor")
-    public String getColor() {
-        String color = (String) request.getSession().getAttribute("color");
-        return "{\"color\":\"" + color + "\"}";
-    }
-
     @GetMapping("/delname")
     public void delName() {
         request.getSession().removeAttribute("name");
-        request.getSession().removeAttribute("color");
+        request.getSession().removeAttribute("password");
     }
 
     @GetMapping("/setname")
-    public String setName(@RequestParam(value = "name", defaultValue = "Anónimo") String name,
-            @RequestParam(value = "color", defaultValue = "black") String color) {
-        request.getSession().setAttribute("name", name);
-        request.getSession().setAttribute("color", color);
-        return "{\"response\":\"Hello " + name + "!\"}";
+    public void setName(@RequestParam(value = "username", defaultValue = "Anónimo") String username,
+            @RequestParam(value = "password", defaultValue = "") String password) {
+        request.getSession().setAttribute("name", username);
+        request.getSession().setAttribute("password", password);
     }
 
     @GetMapping("/getname")
     public String getName() {
-        String name = (String) request.getSession().getAttribute("name");
-        String color = (String) request.getSession().getAttribute("color");
-        return "{\"name\":\"" + name + "\",\n" +
-                "\"color\":\"" + color + "\"}";
+        String username = (String) request.getSession().getAttribute("name");
+        String password = (String) request.getSession().getAttribute("password");
+        return "{\"name\":\"" + username + "\",\n" +
+                "\"password\":\"" + password + "\"}";
     }
 
     public void sessionManagement() {
