@@ -53,7 +53,10 @@ class NavBarText extends React.Component{
             }
         } else{
             window.location.href = "/index.html";
-        }
+        }      
+    }
+
+    redireccionTablero(){
         
     }
 

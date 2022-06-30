@@ -37,7 +37,6 @@ class NameForm extends React.Component {
   }
 
   UNSAFE_componentWillMount(){
-    console.log(sessionStorage.getItem('log'));
     if(sessionStorage.getItem('log')=='true'){
       window.location.href = "/home.html"
     } else {
@@ -51,11 +50,11 @@ class NameForm extends React.Component {
           <h1>Login</h1>
           <div className="divForm">
             <label className="labelForm">Username</label>
-            <input className="inputForm" type="text" value={this.state.username} onChange={this.handleChange} />
+            <input className="inputForm" type="name" value={this.state.username} onChange={this.handleChange} />
           </div>
           <div className="divForm">
             <label className="labelForm">Password</label>
-            <input className="inputForm" type="text" value={this.state.password} onChange={this.handlePasswordChange}/>
+            <input className="inputForm" type="password" value={this.state.password} onChange={this.handlePasswordChange}/>
           </div>
           <input className="btn" type="submit" value="Submit" />
         </form>
