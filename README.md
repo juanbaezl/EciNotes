@@ -1,5 +1,7 @@
 # Titulo
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9691a74cada04c2b88f58534948446df)](https://app.codacy.com/gh/juanbaezl/EciNotes?utm_source=github.com&utm_medium=referral&utm_content=juanbaezl/EciNotes&utm_campaign=Badge_Grade_Settings)
+
 ECI Notes
 
 ## Resumen
