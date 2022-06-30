@@ -1,3 +1,7 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/juanbaezl/EciNotes/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/juanbaezl/EciNotes/tree/main)
+
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1d7e713e733d4ab1b811b70f09bd3320)](https://www.codacy.com/gh/juanbaezl/EciNotes/dashboard?utm_source=github.com&utm_medium=referral&utm_content=juanbaezl/EciNotes&utm_campaign=Badge_Grade)
+
 # Titulo
 
 ECI Notes

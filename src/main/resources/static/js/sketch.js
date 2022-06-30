@@ -1,75 +1,162 @@
 var stompClient;
-var colores;
-//Este código asume que las librerías de P5.js ya están cargadas.
-//Esta función se ejecuta una sola vez al inicio del script.
-function setup() {
-    createCanvas(1000, 600);
-    background(220, 180, 200);
-    stomp();
-    getColor();
-}
-// Esta función se ejecuta repetidas veces indefinidamente.
-function draw() {
-    
-    if (mouseIsPressed === true) {
-        fill(colores);
-        stroke(colores);
-        line(mouseX, mouseY, pmouseX, pmouseY);
-        var json = {
-            xPos: mouseX,
-            yPos: mouseY,
-            pXPos: pmouseX,
-            pYPos: pmouseY,
-            color: colores,
-            borrar: false
-        }
-        message(json)
-    }
-}
+var colores = "#000000";
+var size = 12;
 
-function stomp(){
-    var socket = new SockJS("/stompEndpoint");
-    stompClient = Stomp.over(socket);
-    stompClient.connect({},function(frame){
-        console.log(frame);
-        stompClient.subscribe("/topic/tablero", function(event){
-            var json = JSON.parse(event.body);
-            if(!json.borrar){
-                fill(json.color);
-                stroke(json.color);
-                line(json.xPos, json.yPos, json.pXPos, json.pYPos);
-            } else {
-                clear();
-                background(220, 180, 200);
-            }
+function stomp(p){
+        var socket = new SockJS("/stompEndpoint");
+        stompClient = Stomp.over(socket);
+        stompClient.connect({},function(frame){
+            stompClient.subscribe("/topic/tablero", function(event){
+                var json = JSON.parse(event.body);
+                if(!json.borrar){
+                    p.fill(json.color);
+                    p.stroke(json.color);
+                    p.strokeWeight(json.size);
+                    p.line(json.xPos, json.yPos, json.pXPos, json.pYPos);
+                } else {
+                    p.clear();
+                    p.background("#D5DFE9");
+                }
+            });
         });
-    });
-}
+    }
 
 function message(json){
     stompClient.send("/topic/tablero", {},JSON.stringify(json));
 }
 
-function getColor() {
-    fetch("/getcolor",{
-        method: 'GET',
-    }).then(res => res.json())
-    .then((result) => {
-        if(result.color != "null"){
-            colores = result.color;
-        } else{
-            window.location.href = "index.html";
+class BoardCanvas extends React.Component {
+    constructor(props) {
+        super(props);
+        this.myp5 = null;
+        this.state = {loadingState: 'Loading Canvas ...'}
+        this.sketch = function (p) {
+            p.setup = function () {
+                p.createCanvas(1000, 600);
+                p.background("#D5DFE9");
+                stomp(p);
+            };
+            p.draw = function () {
+                if (p.mouseIsPressed === true) {
+                    p.fill(colores);
+                    p.stroke(colores);
+                    p.strokeWeight(size);
+                    p.line(p.mouseX, p.mouseY, p.pmouseX, p.pmouseY);
+                    var json = {
+                        xPos: p.mouseX,
+                        yPos: p.mouseY,
+                        pXPos: p.pmouseX,
+                        pYPos: p.pmouseY,
+                        color: colores,
+                        size: size,
+                        borrar: false
+                    };
+                    message(json);
+                }
+            };
         }
+        this.sketch = this.sketch.bind(this);
     }
-    )
-    console.log(colores);
+
+    componentDidMount() {
+        colores = this.props.color;
+        this.myp5 = new p5(this.sketch, 'container');
+        this.setState({loadingState: 'Canvas Loaded'});
+    }
+
+    render(){
+        return(
+                <div>
+                    <h4 className="status">Drawing status: {this.state.loadingState}</h4>
+                </div>
+            );
+    }
 }
 
-function borrar(){
-    clear();
-    background(220, 180, 200);
-    var json = {
-        borrar: true
+class Board extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {color: '#000000',
+                      size: 12,
+                      escribir: true
+                      }
+        this.handleSizeChange = this.handleSizeChange.bind(this);
+        this.handleColorChange = this.handleColorChange.bind(this);      
+        this.escribir = this.escribir.bind(this);   
     }
-    message(json)
+
+    handleColorChange(event) {
+        this.setState({color: event.target.value});
+        colores = event.target.value;
+    }
+
+    handleSizeChange(event) {
+        this.setState({size: event.target.value});
+        size = event.target.value;
+    } 
+
+    redireccionHome(){
+        window.location.href = "/home.html";
+    }
+
+    escribir(band){
+        this.setState({escribir: band});
+        if(!band){
+            colores = "#D5DFE9";
+        } else {
+            colores = this.state.color;
+        }
+    }
+
+    UNSAFE_componentWillMount(){
+        if(sessionStorage.getItem('log')!='true'){
+            window.location.href = "/index.html";
+        }      
+    }
+
+    render(){
+        return(
+            <div>
+                <div className="tools">
+                    <h1 className="titulo">Cuadernillo</h1>
+                    <div className="fuente">
+                        <div className="divSelect">
+                            <button type="button" className="button" onClick={this.escribir.bind(this, true)}>
+                                    <span className="buttonIcon"><img src="img/toolPencil.png"/></span>
+                                </button>
+                        </div>
+                        <div className="divSelect">
+                            <button type="button" className="button" onClick={this.escribir.bind(this, false)}>
+                                    <span className="buttonIcon"><img src="img/toolEraser.png"/></span>
+                                </button>
+                        </div>
+                        <div className="divFont">
+                            <center>
+                                <label className="labelFont" >Font Size:</label>
+                                <input id="intput" className="inputInt" type="int" required={true} value={this.state.size} onChange={this.handleSizeChange} maxLength="2"></input>
+                            </center>
+                        </div>
+                        {this.state.escribir ? (<div className="divFont">
+                            <center>
+                                <label className="labelFont" >Color:</label>
+                                <input id="colorput" className="inputColor" type="color" value={this.state.color} onChange={this.handleColorChange}/>
+                            </center>
+                        </div>) : (<div></div>)}
+                        
+                        <div className="divExit">
+                                <button type="button" className="button" onClick={this.redireccionHome}>
+                                    <span className="buttonIcon"><ion-icon name="arrow-back-circle-outline"></ion-icon></span>
+                                </button>
+                        </div>
+                    </div>
+                </div>
+                <BoardCanvas color={"#000000"} size={12}/>
+            </div>
+        )
+    }
 }
+
+ReactDOM.render(
+    <Board />,
+    document.getElementById('tablero')
+);

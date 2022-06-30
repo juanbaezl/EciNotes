@@ -57,7 +57,7 @@ class NavBarText extends React.Component{
     }
 
     redireccionTablero(){
-        
+        window.location.href = "/tablero.html";
     }
 
     render(){
@@ -96,7 +96,7 @@ class NavBarText extends React.Component{
                         </div>
                         <div className="divContent">
                             <h1>Tus Cuadernillos</h1>
-                            <button type="button" className="button">
+                            <button type="button" className="button" onClick={this.redireccionTablero}>
                                 <span className="buttonText"> Nuevo Cuadernillo </span>
                                 <span className="buttonIcon"><ion-icon name="add-outline"></ion-icon></span>
                             </button>

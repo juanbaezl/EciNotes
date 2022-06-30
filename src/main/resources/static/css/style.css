@@ -1,18 +1,77 @@
 body{
+    padding: 0%;
+    margin: 0px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url(/img/fondo.jpg);
     text-align: center;
-    align-items: center;
-    align-content: center;
 }
-.titulo{
-    text-align: center;
+
+.tools{
+    display:inline-flex;
+    background-color: #333;
+    color: white;
+    width: 100%;
+    align-items: center;
+    padding: 0% 5%;
+}
+
+.labelFont{
+    font-size: 20px;
+}
+
+.fuente{
+    margin-left: 5%;
+    display: inline-flex;
+}
+
+.inputInt{
+    height: 25px;
+}
+.divFont{
+    margin: 10px 10px ;
+}
+
+.inputColor{
+    height: 25px;
+    width: 50px;
+    border: 0;
+    cursor: pointer;
+}
+
+.status{
+    display: none;
 }
 .p5Canvas{
     border-style: solid;
     display: block;
-    margin: auto;
+    margin: 50px auto;
 }
-.btn{
-    width: 1000px;
-    height: 40px;
-    margin-bottom: 20px;
+
+.divExit{
+    margin-top: 10px;
+    margin-left: 100%;
+}
+
+.button{
+    display: block;
+    height: 60px;
+    width: 60px;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.buttonIcon {
+    display: block;
+    text-align: center;
+    align-items: center;
+    color: white;
+    height: 100%;
+    width: 100%;
+    font-size: 450%;
+    background: rgba(0, 0, 0, 0.08);
 }
