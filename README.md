@@ -12,6 +12,9 @@ ECI Notes es una aplicación web la cual le permitirá realizar apuntes colabora
 
 También en caso de querer estos apuntes serán guardados en un repositorio global, con el fin de que otros usuarios de la ECI puedan usar estos.
 
+El proyecto lo puede ver en el siguiente link:
+[App Eci Notes](https://ecinotes.herokuapp.com/)
+
 ## Descripción
 
 La toma de apuntes es una metodología básica a la hora de estudiar y repasar temas en las universidades, según Sandra Espino-Datsira en su estudio [La toma de apuntes. Visión de los estudiantes universitarios mexicanos](https://www.redalyc.org/jatsRepo/2991/299151245004/html/index.html) la mayoría de los estudiantes usa estos apuntes tal como lo podemos ver en la siguiente tabla.
