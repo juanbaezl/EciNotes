@@ -32,7 +32,7 @@ class BoardCanvas extends React.Component {
         this.state = {loadingState: 'Loading Canvas ...'}
         this.sketch = function (p) {
             p.setup = function () {
-                p.createCanvas(1000, 600);
+                p.createCanvas(screen.width - 80, screen.height - 120);
                 p.background("#D5DFE9");
                 stomp(p);
             };
@@ -117,7 +117,7 @@ class Board extends React.Component{
     render(){
         return(
             <div>
-                <div className="tools">
+                <nav className="tools">
                     <h1 className="titulo">Cuadernillo</h1>
                     <div className="fuente">
                         <div className="divSelect">
@@ -142,14 +142,13 @@ class Board extends React.Component{
                                 <input id="colorput" className="inputColor" type="color" value={this.state.color} onChange={this.handleColorChange}/>
                             </center>
                         </div>) : (<div></div>)}
-                        
-                        <div className="divExit">
-                                <button type="button" className="button" onClick={this.redireccionHome}>
-                                    <span className="buttonIcon"><ion-icon name="arrow-back-circle-outline"></ion-icon></span>
-                                </button>
-                        </div>
                     </div>
-                </div>
+                    <div className="divExit">
+                        <button type="button" className="button" onClick={this.redireccionHome}>
+                            <span className="buttonIcon"><ion-icon name="arrow-back-circle-outline"></ion-icon></span>
+                        </button>
+                    </div>
+                </nav>
                 <BoardCanvas color={"#000000"} size={12}/>
             </div>
         )
