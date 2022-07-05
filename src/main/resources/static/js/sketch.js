@@ -5,52 +5,19 @@ let colores = "#000000";
 let text =  false;
 let size = 12;
 
-function stomp(p){
+function stomp(){
         var socket = new SockJS("/stompEndpoint");
         stompClient = Stomp.over(socket);
         stompClient.connect({},function(frame){
             stompClient.subscribe("/topic/tablero", function(event){
-                var json = JSON.parse(event.body);
-                if(!json.borrar){
-                    p.fill(json.color);
-                    p.stroke(json.color);
-                    p.strokeWeight(json.size);
-                    p.line(json.xPos, json.yPos, json.pXPos, json.pYPos);
-                } else {
-                    p.clear();
-                    p.background("#D5DFE9");
-                }
+                var msg = JSON.parse(event.body);
+                canvas.add(new fabric.Line(msg));
             });
         });
     }
 
 function message(json){
     stompClient.send("/topic/tablero", {},JSON.stringify(json));
-}
-
-class BoardCanvas extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {loadingState: 'Loading Canvas ...'}
-        this.canvas = null;
-    }
-
-    componentDidMount() {
-        colores = this.props.color;
-        this.canvas = new fabric.Canvas('canvas', {
-                isDrawingMode: true,
-                backgroundColor: "#D5DFE9",
-		});
-        this.setState({loadingState: 'Canvas Loaded'});
-    }
-
-    render(){
-        return(
-                <div className="canvas">
-                    <canvas id="canvas"/>
-                </div>
-            );
-    }
 }
 
 class Board extends React.Component{
@@ -100,6 +67,7 @@ class Board extends React.Component{
     }
 
     componentDidMount() {
+        stomp();
         var w = screen.width - 80;
         var h = screen.height - 120;
         canvas = new fabric.Canvas('canvas', {
@@ -109,6 +77,10 @@ class Board extends React.Component{
                 backgroundColor: "#D5DFE9",
 		});
         canvas.freeDrawingBrush.width = this.state.size;
+        canvas.on('mouse:up', handleEvent);
+        function handleEvent(e) {
+            message(e);
+        }
     }
 
     UNSAFE_componentWillMount(){
