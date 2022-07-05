@@ -1,6 +1,9 @@
-var stompClient;
-var colores = "#000000";
-var size = 12;
+let stompClient;
+let canvas;
+let messageText='Hola';
+let colores = "#000000";
+let text =  false;
+let size = 12;
 
 function stomp(p){
         var socket = new SockJS("/stompEndpoint");
@@ -28,46 +31,23 @@ function message(json){
 class BoardCanvas extends React.Component {
     constructor(props) {
         super(props);
-        this.myp5 = null;
         this.state = {loadingState: 'Loading Canvas ...'}
-        this.sketch = function (p) {
-            p.setup = function () {
-                p.createCanvas(screen.width - 80, screen.height - 120);
-                p.background("#D5DFE9");
-                stomp(p);
-            };
-            p.draw = function () {
-                if (p.mouseIsPressed === true) {
-                    p.fill(colores);
-                    p.stroke(colores);
-                    p.strokeWeight(size);
-                    p.line(p.mouseX, p.mouseY, p.pmouseX, p.pmouseY);
-                    var json = {
-                        xPos: p.mouseX,
-                        yPos: p.mouseY,
-                        pXPos: p.pmouseX,
-                        pYPos: p.pmouseY,
-                        color: colores,
-                        size: size,
-                        borrar: false
-                    };
-                    message(json);
-                }
-            };
-        }
-        this.sketch = this.sketch.bind(this);
+        this.canvas = null;
     }
 
     componentDidMount() {
         colores = this.props.color;
-        this.myp5 = new p5(this.sketch, 'container');
+        this.canvas = new fabric.Canvas('canvas', {
+                isDrawingMode: true,
+                backgroundColor: "#D5DFE9",
+		});
         this.setState({loadingState: 'Canvas Loaded'});
     }
 
     render(){
         return(
-                <div>
-                    <h4 className="status">Drawing status: {this.state.loadingState}</h4>
+                <div className="canvas">
+                    <canvas id="canvas"/>
                 </div>
             );
     }
@@ -78,34 +58,57 @@ class Board extends React.Component{
         super(props);
         this.state = {color: '#000000',
                       size: 12,
-                      escribir: true
+                      escribir: true,
+                      text: false
                       }
         this.handleSizeChange = this.handleSizeChange.bind(this);
-        this.handleColorChange = this.handleColorChange.bind(this);      
-        this.escribir = this.escribir.bind(this);   
+        this.handleColorChange = this.handleColorChange.bind(this);     
+        this.draw = this.draw.bind(this); 
+        this.erase = this.erase.bind(this); 
     }
 
     handleColorChange(event) {
         this.setState({color: event.target.value});
-        colores = event.target.value;
+        canvas.freeDrawingBrush.color = event.target.value;
     }
 
     handleSizeChange(event) {
         this.setState({size: event.target.value});
-        size = event.target.value;
+        canvas.freeDrawingBrush.width = event.target.value;
     } 
 
     redireccionHome(){
         window.location.href = "/home.html";
     }
 
-    escribir(band){
-        this.setState({escribir: band});
-        if(!band){
-            colores = "#D5DFE9";
-        } else {
-            colores = this.state.color;
-        }
+    draw(){
+        canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+        canvas.isDrawingMode = true;
+        canvas.freeDrawingBrush.width = this.state.size;
+        canvas.freeDrawingBrush.color = this.state.color;
+    }
+
+    erase(){
+        canvas.freeDrawingBrush = new fabric.EraserBrush(canvas);
+        canvas.isDrawingMode = true;
+        canvas.freeDrawingBrush.width = this.state.size;
+    }
+
+    text(){
+        text = true;
+        this.setState({text: band});
+    }
+
+    componentDidMount() {
+        var w = screen.width - 80;
+        var h = screen.height - 120;
+        canvas = new fabric.Canvas('canvas', {
+                width: w,
+                height: h,
+                isDrawingMode: true,
+                backgroundColor: "#D5DFE9",
+		});
+        canvas.freeDrawingBrush.width = this.state.size;
     }
 
     UNSAFE_componentWillMount(){
@@ -121,12 +124,17 @@ class Board extends React.Component{
                     <h1 className="titulo">Cuadernillo</h1>
                     <div className="fuente">
                         <div className="divSelect">
-                            <button type="button" className="button" onClick={this.escribir.bind(this, true)}>
-                                    <span className="buttonIcon"><img src="img/toolPencil.png"/></span>
-                                </button>
+                            <button type="button" className="button" onClick={this.text}>
+                                <span className="buttonIcon"><img src="img/toolText.png"/></span>
+                            </button>
                         </div>
                         <div className="divSelect">
-                            <button type="button" className="button" onClick={this.escribir.bind(this, false)}>
+                            <button type="button" className="button" onClick={this.draw}>
+                                <span className="buttonIcon"><img src="img/toolPencil.png"/></span>
+                            </button>
+                        </div>
+                        <div className="divSelect">
+                            <button type="button" className="button" onClick={this.erase}>
                                     <span className="buttonIcon"><img src="img/toolEraser.png"/></span>
                                 </button>
                         </div>
@@ -149,7 +157,7 @@ class Board extends React.Component{
                         </button>
                     </div>
                 </nav>
-                <BoardCanvas color={"#000000"} size={12}/>
+                <canvas id="canvas"/>
             </div>
         )
     }

@@ -43,12 +43,12 @@ body{
 .status{
     display: none;
 }
-.p5Canvas{
+
+.canvas-container{
+    border-style: solid;
     border-style: solid;
     display: block;
     margin: 20px auto;
-    width: 100%;
-    height: 100%;
 }
 
 .divExit{
