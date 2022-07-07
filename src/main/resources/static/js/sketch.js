@@ -1,9 +1,9 @@
 let stompClient;
 let canvas;
-let messageText='Hola';
-let colores = "#000000";
-let text =  false;
-let size = 12;
+let lastPointer;
+let click= false;
+let erase= false;
+let group;
 
 function stomp(){
         var socket = new SockJS("/stompEndpoint");
@@ -11,13 +11,50 @@ function stomp(){
         stompClient.connect({},function(frame){
             stompClient.subscribe("/topic/tablero", function(event){
                 var msg = JSON.parse(event.body);
-                canvas.add(new fabric.Line(msg));
+                console.log(msg);
+                if(msg.build == 0){
+                    group = new fabric.Group([],{
+                        id:fabric.Object.__uid++
+                    });
+                    console.log(group);
+                    canvas.add(group);
+                }
+                if (msg.action == 0){
+                    fabric.util.enlivenObjects([msg], function(objects) {
+                        objects.forEach(function(o) {      
+                            group.addWithUpdate(o);
+                        });
+                    });
+                    canvas.renderAll();          
+                }
+                else if(msg.action == 1){
+                    var objectsAll = canvas.getObjects();
+                        console.log(objectsAll);
+                        objectsAll.filter(function(obj){
+                            return obj.id === msg.id;
+                        }).forEach(function(objFilt){
+                            canvas.remove(objFilt);
+                        });
+                }
             });
         });
     }
 
-function message(json){
-    stompClient.send("/topic/tablero", {},JSON.stringify(json));
+function message(msg){
+    stompClient.send("/topic/tablero", {}, msg);
+}
+
+function drawMessage(e){
+    var pointer = canvas.getPointer(e);  
+    var res = canvas.freeDrawingBrush.convertPointsToSVGPath([{x:pointer.x,y:pointer.y},{x:pointer.x,y:pointer.y}]);
+    var path = canvas.freeDrawingBrush.createPath(res.toString());
+    path.set({ 
+        strokeWidth: canvas.freeDrawingBrush.width,
+        stroke: canvas.freeDrawingBrush.color,
+    });
+    var msg = JSON.stringify(path);
+    msg = msg.replace('{','{"action":0,')
+    message(msg);
 }
 
 class Board extends React.Component{
@@ -25,7 +62,6 @@ class Board extends React.Component{
         super(props);
         this.state = {color: '#000000',
                       size: 12,
-                      escribir: true,
                       text: false
                       }
         this.handleSizeChange = this.handleSizeChange.bind(this);
@@ -56,15 +92,21 @@ class Board extends React.Component{
     }
 
     erase(){
-        canvas.freeDrawingBrush = new fabric.EraserBrush(canvas);
-        canvas.isDrawingMode = true;
-        canvas.freeDrawingBrush.width = this.state.size;
+        canvas.getActiveObjects().forEach((obj) => {
+            var object = {
+                action:1,
+                id:obj.id
+            }
+            message(JSON.stringify(object));
+        });
+        canvas.discardActiveObject().renderAll();
     }
 
-    text(){
-        text = true;
-        this.setState({text: band});
+    select(){
+        canvas.isDrawingMode = false;
     }
+
+    
 
     componentDidMount() {
         stomp();
@@ -75,12 +117,29 @@ class Board extends React.Component{
                 height: h,
                 isDrawingMode: true,
                 backgroundColor: "#D5DFE9",
-		});
+                freeDrawingCursor: "crosshair"
+		});       
         canvas.freeDrawingBrush.width = this.state.size;
-        canvas.on('mouse:up', handleEvent);
-        function handleEvent(e) {
-            message(e);
-        }
+        canvas.isDrawingMode = true;
+        canvas._onMouseDownInDrawingMode = function (e) {
+            canvas.defaultCursor = "crosshair";
+            var build = {
+                build:0
+            }
+            message(JSON.stringify(build));
+            drawMessage(e);
+            click = true;
+        };
+        canvas._onMouseMoveInDrawingMode = function (e) {
+            canvas.defaultCursor = "crosshair";
+            if(click){
+                drawMessage(e)
+            }
+        };
+
+        canvas.on('mouse:up',function (e) {
+            click = false;
+        });
     }
 
     UNSAFE_componentWillMount(){
@@ -96,8 +155,8 @@ class Board extends React.Component{
                     <h1 className="titulo">Cuadernillo</h1>
                     <div className="fuente">
                         <div className="divSelect">
-                            <button type="button" className="button" onClick={this.text}>
-                                <span className="buttonIcon"><img src="img/toolText.png"/></span>
+                            <button type="button" className="button" onClick={this.select}>
+                                <span className="buttonIcon"><img src="img/toolSelect.png"/></span>
                             </button>
                         </div>
                         <div className="divSelect">
@@ -116,12 +175,12 @@ class Board extends React.Component{
                                 <input id="intput" className="inputInt" type="int" required={true} value={this.state.size} onChange={this.handleSizeChange} maxLength="2"></input>
                             </center>
                         </div>
-                        {this.state.escribir ? (<div className="divFont">
+                        <div className="divFont">
                             <center>
                                 <label className="labelFont" >Color:</label>
                                 <input id="colorput" className="inputColor" type="color" value={this.state.color} onChange={this.handleColorChange}/>
                             </center>
-                        </div>) : (<div></div>)}
+                        </div>
                     </div>
                     <div className="divExit">
                         <button type="button" className="button" onClick={this.redireccionHome}>
