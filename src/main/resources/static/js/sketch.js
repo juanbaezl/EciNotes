@@ -3,6 +3,7 @@ let canvas;
 let lastPointer;
 let click= false;
 let erase= false;
+let text= false;
 let group;
 
 function stomp(){
@@ -68,6 +69,9 @@ class Board extends React.Component{
         this.handleColorChange = this.handleColorChange.bind(this);     
         this.draw = this.draw.bind(this); 
         this.erase = this.erase.bind(this); 
+        this.text = this.text.bind(this);
+        this.select = this.select.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     handleColorChange(event) {
@@ -89,6 +93,7 @@ class Board extends React.Component{
         canvas.isDrawingMode = true;
         canvas.freeDrawingBrush.width = this.state.size;
         canvas.freeDrawingBrush.color = this.state.color;
+        text = false;
     }
 
     erase(){
@@ -104,6 +109,12 @@ class Board extends React.Component{
 
     select(){
         canvas.isDrawingMode = false;
+        text = false;
+    }
+
+    text(){
+        canvas.isDrawingMode = false;
+        text = true;
     }
 
     
@@ -137,6 +148,28 @@ class Board extends React.Component{
             }
         };
 
+        canvas.on('mouse:down',function (e) {
+            if(text){
+                console.log("tucson");
+                var pointer = canvas.getPointer(e);
+                var textbox = new fabric.IText('',{
+                    left: pointer.x,
+                    top: pointer.y,
+                    fontFamily: 'Segoe UI',
+                    fontSize: canvas.freeDrawingBrush.width,
+                    fill: canvas.freeDrawingBrush.color,
+                    height: canvas.freeDrawingBrush.width,
+                    width: 50,
+                    padding: 7
+                });
+                
+                canvas.add(textbox);
+                canvas.setActiveObject(textbox);
+                textbox.enterEditing();
+                textbox.hiddenTextarea.focus();
+            }
+        });
+
         canvas.on('mouse:up',function (e) {
             click = false;
         });
@@ -157,6 +190,11 @@ class Board extends React.Component{
                         <div className="divSelect">
                             <button type="button" className="button" onClick={this.select}>
                                 <span className="buttonIcon"><img src="img/toolSelect.png"/></span>
+                            </button>
+                        </div>
+                        <div className="divSelect">
+                            <button type="button" className="button" onClick={this.text}>
+                                <span className="buttonIcon"><img src="img/toolText.png"/></span>
                             </button>
                         </div>
                         <div className="divSelect">
