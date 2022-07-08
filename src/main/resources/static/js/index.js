@@ -8,9 +8,11 @@ class NameForm extends React.Component {
     super(props);
     this.state = {username: '',
                   password: '',
-                  isLoaded: false};
+                  isLoaded: false,
+                  id: null};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.getId = this.getId.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
   }
 
@@ -27,6 +29,7 @@ class NameForm extends React.Component {
       if(this.state.username==sesiones[i].username && this.state.password==sesiones[i].password){
         sessionStorage.setItem('name',i);
         sessionStorage.setItem('log',true);
+        sessionStorage.setItem('id',this.state.id);
         window.location.href = "/home.html";
       }
     }
@@ -36,11 +39,24 @@ class NameForm extends React.Component {
     event.preventDefault();
   }
 
+  getId(){
+    fetch("/getId")
+      .then(res => res.json())
+      .then((result) => 
+        {
+          this.setState({
+            id: result.id
+          });
+        }
+    )
+  }
+
   UNSAFE_componentWillMount(){
     if(sessionStorage.getItem('log')=='true'){
       window.location.href = "/home.html"
     } else {
       sessionStorage.setItem('log',false);
+      this.getId();
     }
   }
 

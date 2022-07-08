@@ -1,5 +1,6 @@
 let stompClient;
 let canvas;
+const idSession = sessionStorage.getItem('id');
 let lastPointer;
 let click= false;
 let erase= false;
@@ -12,30 +13,45 @@ function stomp(){
         stompClient.connect({},function(frame){
             stompClient.subscribe("/topic/tablero", function(event){
                 var msg = JSON.parse(event.body);
-                console.log(msg);
-                if(msg.build == 0){
-                    group = new fabric.Group([],{
-                        id:fabric.Object.__uid++
+                if(msg.build == 1){
+                    filtObjects(msg.id).forEach(function(objFilt){
+                        objFilt.activeId= msg.activeId;
                     });
-                    console.log(group);
-                    canvas.add(group);
                 }
                 if (msg.action == 0){
                     fabric.util.enlivenObjects([msg], function(objects) {
-                        objects.forEach(function(o) {      
-                            group.addWithUpdate(o);
+                        objects.forEach(function(o) { 
+                            o.set({
+                                id: fabric.Object.__uid++,
+                                lockRotation: true,
+                                lockScalingX: true,
+                                lockScalingY: true,
+                                lockMovementX: true,
+                                lockMovementY: true,
+                                hasControls: false,
+                                hasBorders: false
+                            });
+                            canvas.add(o);   
+                            if(msg.type === "i-text"){  
+                                if(sessionStorage.getItem('id')==o.activeId){
+                                    canvas.setActiveObject(o);
+                                    o.enterEditing();
+                                    o.hiddenTextarea.focus(); 
+                                }
+                            }
                         });
                     });
                     canvas.renderAll();          
                 }
                 else if(msg.action == 1){
-                    var objectsAll = canvas.getObjects();
-                        console.log(objectsAll);
-                        objectsAll.filter(function(obj){
-                            return obj.id === msg.id;
-                        }).forEach(function(objFilt){
-                            canvas.remove(objFilt);
-                        });
+                    filtObjects(msg.id).forEach(function(objFilt){
+                        canvas.remove(objFilt);
+                    });
+                } else if(msg.action == 2){
+                    filtObjects(msg.id).forEach(function(objFilt){
+                        objFilt.set('text',msg.target.text);
+                        canvas.renderAll();
+                    });
                 }
             });
         });
@@ -45,6 +61,13 @@ function message(msg){
     stompClient.send("/topic/tablero", {}, msg);
 }
 
+function filtObjects(id){
+    var objectsAll = canvas.getObjects();
+    return(objectsAll.filter(function(obj){
+        return obj.id === id;
+    }));
+}
+
 function drawMessage(e){
     var pointer = canvas.getPointer(e);  
     var res = canvas.freeDrawingBrush.convertPointsToSVGPath([{x:pointer.x,y:pointer.y},{x:pointer.x,y:pointer.y}]);
@@ -52,10 +75,36 @@ function drawMessage(e){
     path.set({ 
         strokeWidth: canvas.freeDrawingBrush.width,
         stroke: canvas.freeDrawingBrush.color,
+        selectable: false
     });
+    
     var msg = JSON.stringify(path);
     msg = msg.replace('{','{"action":0,')
     message(msg);
+}
+
+function drawText(e){
+    var pointer = canvas.getPointer(e);
+    var textbox = new fabric.IText('',{
+        left: pointer.x,
+        top: pointer.y,
+        fontFamily: 'Segoe UI',
+        fontSize: canvas.freeDrawingBrush.width,
+        fill: canvas.freeDrawingBrush.color,
+        height: canvas.freeDrawingBrush.width,
+        width: 50,
+        padding: 7
+    });
+    var msg = JSON.stringify(textbox);
+    msg = msg.replace('{','{"action":0,"activeId":"'+idSession+'",');
+    message(msg);  
+}
+
+function initMessage(){
+    var build = {
+        build:0
+    }
+    message(JSON.stringify(build));
 }
 
 class Board extends React.Component{
@@ -68,10 +117,7 @@ class Board extends React.Component{
         this.handleSizeChange = this.handleSizeChange.bind(this);
         this.handleColorChange = this.handleColorChange.bind(this);     
         this.draw = this.draw.bind(this); 
-        this.erase = this.erase.bind(this); 
-        this.text = this.text.bind(this);
-        this.select = this.select.bind(this);
-        this.componentDidMount = this.componentDidMount.bind(this);
+        this.erase = this.erase.bind(this);
     }
 
     handleColorChange(event) {
@@ -129,49 +175,52 @@ class Board extends React.Component{
                 isDrawingMode: true,
                 backgroundColor: "#D5DFE9",
                 freeDrawingCursor: "crosshair"
-		});       
+		});
+        canvas.selection = false;       
         canvas.freeDrawingBrush.width = this.state.size;
         canvas.isDrawingMode = true;
         canvas._onMouseDownInDrawingMode = function (e) {
             canvas.defaultCursor = "crosshair";
-            var build = {
-                build:0
-            }
-            message(JSON.stringify(build));
             drawMessage(e);
             click = true;
         };
         canvas._onMouseMoveInDrawingMode = function (e) {
             canvas.defaultCursor = "crosshair";
             if(click){
-                drawMessage(e)
+                drawMessage(e);
             }
         };
 
         canvas.on('mouse:down',function (e) {
             if(text){
-                console.log("tucson");
-                var pointer = canvas.getPointer(e);
-                var textbox = new fabric.IText('',{
-                    left: pointer.x,
-                    top: pointer.y,
-                    fontFamily: 'Segoe UI',
-                    fontSize: canvas.freeDrawingBrush.width,
-                    fill: canvas.freeDrawingBrush.color,
-                    height: canvas.freeDrawingBrush.width,
-                    width: 50,
-                    padding: 7
-                });
-                
-                canvas.add(textbox);
-                canvas.setActiveObject(textbox);
-                textbox.enterEditing();
-                textbox.hiddenTextarea.focus();
+                drawText(e);
             }
         });
 
         canvas.on('mouse:up',function (e) {
             click = false;
+        });
+
+        canvas.on('object:modified',function(e){
+            var msg = '{"build":1,"id":'+e.target.id+',"activeId":null}';
+            message(msg);
+            canvas.discardActiveObject().renderAll();
+        });
+
+        canvas.on('text:changed',function(e){
+            var msg = JSON.stringify(e);
+            msg = msg.replace('{','{"action":2,"activeId":"'+idSession+'","id":'+e.target.id+',');
+            message(msg); 
+        });
+
+        canvas.on('text:selection:changed',function(e){
+            var ref = e.target.activeId;
+            if(ref == null){
+                var msg = '{"build":1,"id":'+e.target.id+',"activeId":"'+idSession+'"}';
+                message(msg);
+            } else if (ref != idSession){
+                canvas.discardActiveObject().renderAll();
+            }
         });
     }
 

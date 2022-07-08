@@ -24,7 +24,6 @@ public class WebSiteController {
 
     @GetMapping("/status")
     public String status() {
-        sessionManagement();
         String name = (String) request.getSession().getAttribute("name");
         return "{\"status\":\"Greetings from Spring Boot "
                 + name + ". " + java.time.LocalDate.now() + ", "
@@ -32,18 +31,9 @@ public class WebSiteController {
                 + ". " + "The server is Running!\"}";
     }
 
-    @GetMapping("/setname")
-    public void setName(@RequestParam(value = "username", defaultValue = "Anónimo") String username) {
-        request.getSession().setAttribute("name", username);
-    }
-
-    @GetMapping("/getname")
-    public String getName() {
-        String username = (String) request.getSession().getAttribute("name");
-        return "{\"name\":\"" + username + "\"}";
-    }
-
-    public void sessionManagement() {
-        System.out.println(request.getSession(true).getId());
+    @GetMapping("/getId")
+    public String getId() {
+        String id = request.getSession().getId();
+        return "{\"id\":\"" + id + "\"}";
     }
 }
