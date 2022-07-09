@@ -6,7 +6,7 @@
 
 ECI Notes
 
-## Resumen
+## Descripción
 
 ECI Notes es una aplicación web la cual le permitirá realizar apuntes colaborando en tiempo real junto a sus compañeros, esto con el fin de que sus apuntes sean más completos.
 
@@ -15,60 +15,87 @@ También en caso de querer estos apuntes serán guardados en un repositorio glob
 El proyecto lo puede ver en el siguiente link:
 [App Eci Notes](https://ecinotes.herokuapp.com/)
 
-## Descripción
+### LOC/h
 
-La toma de apuntes es una metodología básica a la hora de estudiar y repasar temas en las universidades, según Sandra Espino-Datsira en su estudio [La toma de apuntes. Visión de los estudiantes universitarios mexicanos](https://www.redalyc.org/jatsRepo/2991/299151245004/html/index.html) la mayoría de los estudiantes usa estos apuntes tal como lo podemos ver en la siguiente tabla.
+Para este taller se hicieron 936 líneas de código, en 52 horas.
 
-![Tabla porcentaje de toma de apuntes](/img/Tabla_Apuntes.jpg)
+**18 LOC/h**
 
-Aquí nos damos cuenta de que más del 70% de los estudiantes encuestados en este estudio toman apuntes a diario y que solamente un 4.9% no toma apuntes.
+### Prerrequisitos
 
-### Problema
+Para correr este se debe tener instalado:
 
-En la universidad existen diferentes materias que son dictadas por distintos profesores, cada una de ellas tiene su metodología que se lleva a cabo con su debido profesor, el problema radica cuando una materia es muy demandante en cuanto a los temas que se explican en esta, debido a que esto produce que el profesor explique varios temas en una misma clase y por lo tanto esta no de tiempo a tomar apuntes y prestar atención a clase.
+- Maven
+- Java
 
-### Solución
+### Guía de uso
 
-ECI Notes llega a ser una alternativa para estos casos, en donde permite una colaboración sencilla entre un grupo de compañeros, con esto lograr además de fortalecer el trabajo en equipo, llegar a apuntes más completos.
+Para compilar el proyecto se debe usar:
 
-Además de esto, si se decide compartir los apuntes con el resto de la comunidad, ayudaría al crecimiento de la comunidad.
+```
+mvn package
+```
 
-## Historias de Usuario
+Para ejecutarlo, se debe hacer de la siguiente forma
 
-- **COMO** usuario **QUIERO** iniciar sesión **PARA** poder ingresar a mis cuadernillos
+```
+$ java -jar target/ECINotes-1.0.jar
+```
 
-  ### Criterios de aceptación
+Este le iniciará la página en su localhost con puerto 5000.
 
-  - Así como puedo iniciar sesión, debe haber una opción de cierre de sesión.
-  - Si no existe una sesión activa, no debe ser posible acceder a ninguna página que requiera permisos de acceso.
+## Documentación
 
-- **COMO** usuario **QUIERO** poder crear un cuadernillo de notas **PARA** poder anotar mis apuntes
+Para visualizar la documentación se debe ejecutar el siguiente comando:
 
-  ### Criterios de aceptación
+```
+mvn javadoc:javadoc
+```
 
-  - Se le debe poder poner nombre a este cuadernilo.
-  - Se debe poder escribir en este cuadernillo.
-  - Debe quedar guardado este cuadernillo en la sesión de la persona.
+Una vez se realice este comando, se debe buscar en la siguiente ruta "target\site\apidocs\index.html"
 
-- **COMO** usuario **QUIERO** poder invitar a mis compañeros fácilmente a mis cuadernillos **PARA** poder colaborar en los apuntes.
+## Estructura de Archivos
 
-  ### Criterios de aceptación
+    .
+    |____pom.xml
+    |____src
+    | |____main
+    | | |____java
+    | | | |____co
+    | | | | |____edu
+    | | | | | |____escuelaing
+    | | | | | | |____configurator
+    | | | | | | | |____CollabTableroWebSocketConfig.java
+    | | | | | | |____controller
+    | | | | | | | |____WebSiteController.java
+    | |____resources
+    | | |____static
+    | | | |____js
+    | | | | |____fabric.js
+    | | | | |____FirstComponent.js
+    | | | | |____home.js
+    | | | | |____index.js
+    | | | | |____sketch.js
+    | | | |____css
+    | | | | |____style.css
+    | | | | |____home.css
+    | | | | |____index.css
+    | | | |____status.html
+    | | | |____home.html
+    | | | |____index.html
+    | | | |____tablero.html
 
-  - La invitación puede ser por un link o por invitación directa.
-  - Una vez el invitado ingrese debe quedar guardado este cuadernillo en su sesión.
+![Diagrama de Clases](img/Diagrama_de_Paquetes.png)
 
-- **COMO** administrador de cuadernillo **QUIERO** llevar registro de las personas que están colaborando en mi cuadernillo **PARA** tener control de los diferentes apuntes
+## Diagramas de Clases
 
-  - Ver las personas que han accedido o han colaborado en el cuadernillo.
+### Controller
 
-- **COMO** administrador de cuadernillo **QUIERO** dar permisos de acceso, lectura y escritura **PARA** controlar las personas que accedan o colaboren en el cuadernillo
+![Diagrama de Clases](img/Diagrama_de_Clases_Controller.png)
 
-  - Estos permisos deben ser por personas en concreto, o por link.
+### Configurator
 
-- **COMO** administrador de cuadernillo **QUIERO** poder compartir mis apuntes en un repositorio global **PARA** que la comunidad ECI pueda usar mis apuntes
-
-  - Una vez se de a esta opción, se debe guardar en un repositorio global.
-  - Todos los usuarios de la ECI tendrán acceso a estos.
+![Diagrama de Clases](img/Diagrama_de_Clases_Configurator.png)
 
 ## Autor
 
