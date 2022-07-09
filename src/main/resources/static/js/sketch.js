@@ -1,11 +1,10 @@
 let stompClient;
 let canvas;
 const idSession = sessionStorage.getItem('id');
-let lastPointer;
-let click= false;
-let erase= false;
-let text= false;
-let group;
+let click = false;
+let erase = false;
+let text = false;
+let draw = true;
 
 function stomp(){
         var socket = new SockJS("/stompEndpoint");
@@ -97,7 +96,9 @@ function drawText(e){
     });
     var msg = JSON.stringify(textbox);
     msg = msg.replace('{','{"action":0,"activeId":"'+idSession+'",');
-    message(msg);  
+    message(msg);
+    
+    console.log(canvas.defaultCursor);
 }
 
 function initMessage(){
@@ -135,10 +136,9 @@ class Board extends React.Component{
     }
 
     draw(){
-        canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-        canvas.isDrawingMode = true;
-        canvas.freeDrawingBrush.width = this.state.size;
-        canvas.freeDrawingBrush.color = this.state.color;
+        canvas.defaultCursor = 'crosshair';
+        canvas.hoverCursor = 'crosshair';
+        draw = true;
         text = false;
     }
 
@@ -154,12 +154,16 @@ class Board extends React.Component{
     }
 
     select(){
-        canvas.isDrawingMode = false;
+        canvas.defaultCursor = 'default';
+        canvas.hoverCursor = 'default';
+        draw = false;
         text = false;
     }
 
     text(){
-        canvas.isDrawingMode = false;
+        canvas.defaultCursor = 'text';
+        canvas.hoverCursor = 'text';
+        draw = false;
         text = true;
     }
 
@@ -172,28 +176,29 @@ class Board extends React.Component{
         canvas = new fabric.Canvas('canvas', {
                 width: w,
                 height: h,
-                isDrawingMode: true,
+                isDrawingMode: false,
                 backgroundColor: "#D5DFE9",
                 freeDrawingCursor: "crosshair"
 		});
         canvas.selection = false;       
         canvas.freeDrawingBrush.width = this.state.size;
-        canvas.isDrawingMode = true;
-        canvas._onMouseDownInDrawingMode = function (e) {
-            canvas.defaultCursor = "crosshair";
-            drawMessage(e);
+        canvas.defaultCursor = 'crosshair';
+        canvas.hoverCursor = 'crosshair';
+        canvas.on('mouse:down',function (e) {
             click = true;
-        };
-        canvas._onMouseMoveInDrawingMode = function (e) {
-            canvas.defaultCursor = "crosshair";
-            if(click){
+            if(text){
+                text = false;
+                canvas.defaultCursor = 'default';
+                canvas.hoverCursor = 'default';
+                drawText(e);
+            } else if(draw){
                 drawMessage(e);
             }
-        };
+        });
 
-        canvas.on('mouse:down',function (e) {
-            if(text){
-                drawText(e);
+        canvas.on('mouse:move',function (e) {
+            if(click && draw){
+                drawMessage(e);
             }
         });
 
