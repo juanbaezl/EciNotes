@@ -1,5 +1,6 @@
 let stompClient;
 let canvas;
+const button = 'button';
 const idSession = sessionStorage.getItem('id');
 let click = false;
 let erase = false;
@@ -97,8 +98,17 @@ function drawText(e){
     var msg = JSON.stringify(textbox);
     msg = msg.replace('{','{"action":0,"activeId":"'+idSession+'",');
     message(msg);
-    
-    console.log(canvas.defaultCursor);
+}
+
+function eraseMessage(e){
+    var object = e.target;
+    if (object != null){
+        var msgErase = {
+            action:1,
+            id:object.id
+        }
+        message(JSON.stringify(msgErase));
+    }
 }
 
 function initMessage(){
@@ -113,12 +123,18 @@ class Board extends React.Component{
         super(props);
         this.state = {color: '#000000',
                       size: 12,
-                      text: false
+                      selectReact: button,
+                      drawReact: button + ' active',
+                      textReact: button,
+                      eraseReact: button
                       }
         this.handleSizeChange = this.handleSizeChange.bind(this);
         this.handleColorChange = this.handleColorChange.bind(this);     
         this.draw = this.draw.bind(this); 
         this.erase = this.erase.bind(this);
+        this.select = this.select.bind(this); 
+        this.text = this.text.bind(this);
+        this.resetCSS = this.resetCSS.bind(this);
     }
 
     handleColorChange(event) {
@@ -131,6 +147,19 @@ class Board extends React.Component{
         canvas.freeDrawingBrush.width = event.target.value;
     } 
 
+    resetCSS(){
+        this.setState({selectReact: button,
+                      drawReact: button,
+                      textReact: button,
+                      eraseReact: button});
+    }
+
+    resetVars(){
+        draw = false;
+        text = false;
+        erase = false;
+    }
+
     redireccionHome(){
         window.location.href = "/home.html";
     }
@@ -138,33 +167,36 @@ class Board extends React.Component{
     draw(){
         canvas.defaultCursor = 'crosshair';
         canvas.hoverCursor = 'crosshair';
+        this.resetVars();
         draw = true;
-        text = false;
+        this.resetCSS();
+        this.setState({drawReact: button + ' active'});
     }
 
     erase(){
-        canvas.getActiveObjects().forEach((obj) => {
-            var object = {
-                action:1,
-                id:obj.id
-            }
-            message(JSON.stringify(object));
-        });
-        canvas.discardActiveObject().renderAll();
+        canvas.defaultCursor = 'crosshair';
+        canvas.hoverCursor = 'pointer';
+        this.resetVars();
+        erase = true;
+        this.resetCSS();
+        this.setState({eraseReact: button + ' active'});
     }
 
     select(){
         canvas.defaultCursor = 'default';
         canvas.hoverCursor = 'default';
-        draw = false;
-        text = false;
+        this.resetVars();
+        this.resetCSS();
+        this.setState({selectReact: button + ' active'});
     }
 
     text(){
         canvas.defaultCursor = 'text';
         canvas.hoverCursor = 'text';
-        draw = false;
+        this.resetVars();
         text = true;
+        this.resetCSS();
+        this.setState({textReact: button + ' active'});
     }
 
     
@@ -187,18 +219,22 @@ class Board extends React.Component{
         canvas.on('mouse:down',function (e) {
             click = true;
             if(text){
-                text = false;
-                canvas.defaultCursor = 'default';
-                canvas.hoverCursor = 'default';
                 drawText(e);
             } else if(draw){
                 drawMessage(e);
+            } else if(erase){
+                eraseMessage(e);
             }
         });
 
         canvas.on('mouse:move',function (e) {
-            if(click && draw){
-                drawMessage(e);
+            if(click){
+                if(draw){
+                    drawMessage(e);
+                } else if (erase){
+                    eraseMessage(e);
+                }
+                
             }
         });
 
@@ -227,6 +263,8 @@ class Board extends React.Component{
                 canvas.discardActiveObject().renderAll();
             }
         });
+
+        
     }
 
     UNSAFE_componentWillMount(){
@@ -242,22 +280,22 @@ class Board extends React.Component{
                     <h1 className="titulo">Cuadernillo</h1>
                     <div className="fuente">
                         <div className="divSelect">
-                            <button type="button" className="button" onClick={this.select}>
+                            <button type="button" className={this.state.selectReact} onClick={this.select}>
                                 <span className="buttonIcon"><img src="img/toolSelect.png"/></span>
                             </button>
                         </div>
                         <div className="divSelect">
-                            <button type="button" className="button" onClick={this.text}>
+                            <button type="button" className={this.state.textReact} onClick={this.text}>
                                 <span className="buttonIcon"><img src="img/toolText.png"/></span>
                             </button>
                         </div>
                         <div className="divSelect">
-                            <button type="button" className="button" onClick={this.draw}>
+                            <button type="button" className={this.state.drawReact} onClick={this.draw}>
                                 <span className="buttonIcon"><img src="img/toolPencil.png"/></span>
                             </button>
                         </div>
                         <div className="divSelect">
-                            <button type="button" className="button" onClick={this.erase}>
+                            <button type="button" className={this.state.eraseReact} onClick={this.erase}>
                                     <span className="buttonIcon"><img src="img/toolEraser.png"/></span>
                                 </button>
                         </div>

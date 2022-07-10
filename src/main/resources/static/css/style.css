@@ -57,6 +57,7 @@ body{
 }
 
 .button{
+    margin-top: 10px;
     display: block;
     height: 60px;
     width: 60px;
@@ -71,11 +72,12 @@ body{
 
 .buttonIcon {
     display: block;
-    text-align: center;
-    align-items: center;
     color: white;
     height: 100%;
     width: 100%;
-    font-size: 450%;
-    background: rgba(0, 0, 0, 0.08);
+    font-size: 400%;
+}
+
+.active {
+    background-color: rgb(88, 88, 88);
 }
