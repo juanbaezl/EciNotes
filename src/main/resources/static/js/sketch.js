@@ -53,8 +53,11 @@ function stomp(){
                         canvas.renderAll();
                     });
                 }
+                console.log('Aqui:');
+                console.log(canvas.toJSON(['id','activeId','action']));
             });
         });
+        
     }
 
 function message(msg){
