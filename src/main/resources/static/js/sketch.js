@@ -54,7 +54,7 @@ function stomp(){
                     });
                 }
                 console.log('Aqui:');
-                console.log(canvas.toJSON(['id','activeId','action']));
+                console.log(JSON.stringify(canvas.toJSON(['id','activeId','action'])));
             });
         });
         
