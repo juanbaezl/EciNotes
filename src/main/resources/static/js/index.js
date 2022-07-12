@@ -1,8 +1,3 @@
-var sesiones = {
-  Juan: {username:'juan.baez-l', password:'juan123'},
-  Admin: {username:'admin', password:'admin123'} 
-};
-
 class NameForm extends React.Component {
   constructor(props) {
     super(props);
@@ -12,7 +7,6 @@ class NameForm extends React.Component {
                   id: null};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.getId = this.getId.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
   }
 
@@ -25,30 +19,23 @@ class NameForm extends React.Component {
   } 
 
   handleSubmit(event) {
-    for(var i in sesiones){
-      if(this.state.username==sesiones[i].username && this.state.password==sesiones[i].password){
-        sessionStorage.setItem('name',i);
-        sessionStorage.setItem('log',true);
-        sessionStorage.setItem('id',this.state.id);
-        window.location.href = "/home.html";
-      }
-    }
-    if(sessionStorage.getItem('log')==false){
-      alert("Datos erroneos");    
-    }
-    event.preventDefault();
-  }
-
-  getId(){
-    fetch("/getId")
-      .then(res => res.json())
-      .then((result) => 
-        {
-          this.setState({
-            id: result.id
-          });
+    fetch("/api/customer/login?"+ new URLSearchParams({
+      name: this.state.username
+    }), { method: "POST" })
+      .then((data) => data.json())
+      .then((data) => {
+        if (data != null) {
+          alert(data);
+          sessionStorage.setItem("name", data.name);
+          sessionStorage.setItem('log',true);
+          sessionStorage.setItem("id", data.id);
+          window.location.href = "/home.html";
+        } else {
+          alert("Datos erroneos");
+          window.location.href = "/";
         }
-    )
+    });
+    event.preventDefault();
   }
 
   UNSAFE_componentWillMount(){
@@ -56,7 +43,6 @@ class NameForm extends React.Component {
       window.location.href = "/home.html"
     } else {
       sessionStorage.setItem('log',false);
-      this.getId();
     }
   }
 

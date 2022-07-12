@@ -1,25 +1,16 @@
-package co.edu.escuelaing.controller;
+package co.edu.escuelaing.rest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@SpringBootApplication
 @RestController
-@ComponentScan(basePackages = { "co.edu.escuelaing" })
-public class WebSiteController {
+public class WebRest {
 
     @Resource
     private HttpServletRequest request;
-
-    public static void main(String[] args) {
-        SpringApplication.run(WebSiteController.class, args);
-    }
 
     @GetMapping("/status")
     public String status() {
