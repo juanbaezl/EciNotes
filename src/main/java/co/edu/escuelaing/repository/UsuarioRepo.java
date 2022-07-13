@@ -12,6 +12,6 @@ import co.edu.escuelaing.entities.Usuario;
 @Repository
 public interface UsuarioRepo extends JpaRepository<Usuario, Long> {
 
-    @Query("Select c from Usuario c where username=:nombre and password=:passwd")
-    Optional<Usuario> findByName(@Param("nombre") String nombre, @Param("passwd") String passwd);
+    @Query("Select c from Usuario c where c.username = :username and c.passwd = :passwd")
+    Optional<Usuario> findByName(@Param("username") String username, @Param("passwd") String passwd);
 }

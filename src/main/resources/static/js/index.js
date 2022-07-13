@@ -19,13 +19,13 @@ class NameForm extends React.Component {
   } 
 
   handleSubmit(event) {
-    fetch("/api/customer/login?"+ new URLSearchParams({
-      name: this.state.username
-    }), { method: "POST" })
+    fetch("/api/usuario/login?name="+this.state.username+"&passwd="+this.state.password, 
+    { 
+      method: "POST",
+    })
       .then((data) => data.json())
       .then((data) => {
-        if (data != null) {
-          alert(data);
+        if (data.name != undefined) {
           sessionStorage.setItem("name", data.name);
           sessionStorage.setItem('log',true);
           sessionStorage.setItem("id", data.id);

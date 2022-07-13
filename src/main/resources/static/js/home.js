@@ -27,9 +27,11 @@ class NavBarText extends React.Component{
         super(props);
         this.state = {
             zona: 0,
-            name: ''
+            name: '',
+            dialog: false
         };
         this.zonaClick = this.zonaClick.bind(this);
+        this.redireccionTablero = this.redireccionTablero.bind(this);
         this.UNSAFE_componentWillMount = this.UNSAFE_componentWillMount.bind(this);
     }
 
@@ -57,7 +59,10 @@ class NavBarText extends React.Component{
     }
 
     redireccionTablero(){
-        window.location.href = "/tablero.html";
+        this.setState({dialog: true});
+        const modal = document.getElementById('modal');
+        modal.style.display = "flex";
+        //window.location.href = "/tablero.html";
     }
 
     render(){
@@ -80,7 +85,12 @@ class NavBarText extends React.Component{
                             </button>
                             <h3 className="subtitle">Cuadernillos recientes</h3>
                             <div className="divCuadernillos">
-                                <Cuadernillo cantidad={3}/>
+                                <Cuadernillo cantidad={3}/>                         
+                            </div>
+                        </div>
+                        <div id="modal" className="divDialog">
+                            <div className="dialog">
+                                <h1>Nuevo Cuadernillo</h1>
                             </div>
                         </div>
                     </div>

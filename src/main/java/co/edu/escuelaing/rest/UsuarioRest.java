@@ -21,11 +21,9 @@ public class UsuarioRest {
     private UsuariosServices usuarioServices;
 
     @PostMapping("/login")
-    private ResponseEntity<Optional<Usuario>> getUserByNamePasswd(@PathParam("name") String name,
+    private String getUserByNamePasswd(@PathParam("name") String name,
             @PathParam("passwd") String passwd) {
         Optional<Usuario> user = usuarioServices.getUserByNamePasswd(name, passwd);
-        if (user.isPresent())
-            System.out.println(user.get().getNombre());
-        return ResponseEntity.ok(user);
+        return user.isPresent() ? user.get().toString() : "{}";
     }
 }

@@ -124,3 +124,21 @@ body{
     color: #60666d;
     border-radius: 10px;
 }
+.divDialog{
+    position: fixed;
+    text-align: center;
+    margin: auto;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    top: 50%;
+    left: 0;
+}
+.dialog{
+    background-color: #333;
+    color: white;
+    padding: 2%;
+    border-radius: 10px;
+    width: 50%;
+}
