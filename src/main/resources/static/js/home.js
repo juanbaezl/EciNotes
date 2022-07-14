@@ -22,6 +22,64 @@ class Cuadernillo extends React.Component{
         );
     }
 }
+
+class Modal extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            show: false
+        };
+        this.closeModal = this.closeModal.bind(this);
+    }
+
+    redireccionTablero(){
+        window.location.href = "/tablero.html";
+    }
+    
+    closeModal(){
+        this.setState({show:false});
+    }
+
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        if (nextProps.show !== this.state.show) {
+            this.setState({
+                show: nextProps.show
+            });
+        }
+    }
+
+    render(){
+        if(this.state.show){
+            return(
+                <div id="modal" className="divDialog">
+                    <div className="dialog">
+                        <div>
+                            <h1>Nuevo Cuadernillo</h1>
+                        </div>
+                        <div>
+                            <input className="inputDialog" type="name"/>
+                        </div>
+                        <div>
+                            <button type="button" className="button" onClick={this.redireccionTablero}>
+                                <span className="buttonText"> Crear </span>
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" className="button" onClick={this.closeModal}>
+                                <span className="buttonIcon"><ion-icon name="arrow-back-circle-outline"></ion-icon></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        } else {
+            return(<div></div>);
+        }
+        
+    }
+
+}
+
 class NavBarText extends React.Component{
     constructor(props){
         super(props);
@@ -31,7 +89,7 @@ class NavBarText extends React.Component{
             dialog: false
         };
         this.zonaClick = this.zonaClick.bind(this);
-        this.redireccionTablero = this.redireccionTablero.bind(this);
+        this.openModal = this.openModal.bind(this);
         this.UNSAFE_componentWillMount = this.UNSAFE_componentWillMount.bind(this);
     }
 
@@ -57,12 +115,8 @@ class NavBarText extends React.Component{
             window.location.href = "/index.html";
         }      
     }
-
-    redireccionTablero(){
+    openModal(){    
         this.setState({dialog: true});
-        const modal = document.getElementById('modal');
-        modal.style.display = "flex";
-        //window.location.href = "/tablero.html";
     }
 
     render(){
@@ -79,7 +133,7 @@ class NavBarText extends React.Component{
                         <div className="divContent">
                             <h1> Bienvenido a ECI Notes, {this.state.name}</h1>
                             <h2 className="subtitle"> Esta plataforma es exclusivamente para la comunidad ECI</h2>
-                            <button type="button" className="button textCuadernillos" onClick={this.redireccionTablero}>
+                            <button type="button" className="button textCuadernillos" onClick={this.openModal}>
                                 <span className="buttonText"> Nuevo Cuadernillo </span>
                                 <span className="buttonIcon"><ion-icon name="add-outline"></ion-icon></span>
                             </button>
@@ -88,11 +142,7 @@ class NavBarText extends React.Component{
                                 <Cuadernillo cantidad={3}/>                         
                             </div>
                         </div>
-                        <div id="modal" className="divDialog">
-                            <div className="dialog">
-                                <h1>Nuevo Cuadernillo</h1>
-                            </div>
-                        </div>
+                        <Modal show={this.state.dialog}/>
                     </div>
                 );
             case 2:

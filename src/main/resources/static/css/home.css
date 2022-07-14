@@ -127,15 +127,16 @@ body{
 .divDialog{
     position: fixed;
     text-align: center;
-    margin: auto;
-    display: none;
     align-items: center;
     justify-content: center;
+    display: flex;
     width: 100%;
-    top: 50%;
+    top: 35%;
     left: 0;
 }
 .dialog{
+    position: relative;
+    display: inline-block;
     background-color: #333;
     color: white;
     padding: 2%;
