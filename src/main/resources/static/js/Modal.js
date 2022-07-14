@@ -20,20 +20,29 @@ class Modal extends React.Component{
                 backgroundColor: "#D5DFE9",
                 freeDrawingCursor: "crosshair"
 		});
-        var tableroC = JSON.stringify(canvas.toJSON())
+        var tableroC = JSON.stringify(canvas.toJSON());
+        var nombre = this.state.nombreCuadernillo;
+        this.setState({nombreCuadernillo:''});
         var formData = new FormData();
         formData.append('tablero',tableroC);
-        formData.append('nombre',this.state.nombreCuadernillo);
+        formData.append('nombre', nombre);
         formData.append('administrador',sessionStorage.getItem('id'));
         formData.append('publico',true);
         formData.append('editable',true);
         formData.append('materias',0);
         fetch('/api/cuadernillo/save',
-        { 
-            method: "POST",
-            body: formData
-        });
-        }
+            { 
+                method: "POST",
+                body: formData
+            }).then((data) => {
+                if(data.status == 202){
+                    sessionStorage.setItem('tablero',nombre);
+                    window.location.href = "/tablero.html"
+                } else {
+                    alert("Ese nombre ya existe");
+                }
+            });
+    }
     
     closeModal(){
         this.setState({show:false});

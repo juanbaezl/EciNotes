@@ -23,7 +23,7 @@ public class Cuadernillo implements Serializable {
     @JoinColumn(name = "administrador", nullable = false)
     private Usuario administrador;
 
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre", unique = true, nullable = false)
     private String nombre;
 
     @Column(name = "tablero", nullable = false)

@@ -206,8 +206,6 @@ class Board extends React.Component{
 
     componentDidMount() {
         stomp();
-        var w = screen.width - 80;
-        var h = screen.height - 120;
         canvas = new fabric.Canvas('canvas', {
                 width: w,
                 height: h,
