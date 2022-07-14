@@ -19,15 +19,15 @@ public class MateriasServices {
         return materiasRepo.save(materia);
     }
 
-    public List<Materias> getAllCadernillos() {
+    public List<Materias> getAllMaterias() {
         return materiasRepo.findAll();
     }
 
-    public void deleteCuadernillo(Materias materia) {
+    public void deleteMateria(Materias materia) {
         materiasRepo.delete(materia);
     }
 
-    public Optional<Materias> getCuadernilloById(Long id) {
+    public Optional<Materias> getMateriaById(Long id) {
         return materiasRepo.findById(id);
     }
 }

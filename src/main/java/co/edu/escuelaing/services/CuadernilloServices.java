@@ -19,6 +19,11 @@ public class CuadernilloServices {
         return cuadernilloRepo.save(cuadernillo);
     }
 
+    public void create(long administrador, String nombre, String tablero, boolean publico, boolean editable,
+            long materias) {
+        cuadernilloRepo.saveByArguments(administrador, nombre, tablero, publico, editable, materias);
+    }
+
     public List<Cuadernillo> getAllCadernillos() {
         return cuadernilloRepo.findAll();
     }

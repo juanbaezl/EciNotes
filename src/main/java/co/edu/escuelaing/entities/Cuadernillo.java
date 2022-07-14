@@ -16,7 +16,7 @@ import javax.persistence.Table;
 public class Cuadernillo implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -42,8 +42,7 @@ public class Cuadernillo implements Serializable {
     public Cuadernillo() {
     }
 
-    public Cuadernillo(
-            Long id, Usuario administrador, String nombre, String tablero, boolean publico, boolean editable,
+    public Cuadernillo(Long id, Usuario administrador, String nombre, String tablero, boolean publico, boolean editable,
             Materias materias) {
         this.id = id;
         this.administrador = administrador;
