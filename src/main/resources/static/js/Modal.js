@@ -35,7 +35,7 @@ class Modal extends React.Component{
                 method: "POST",
                 body: formData
             }).then((data) => {
-                if(data.status == 202){
+                if(data.status == 200){
                     sessionStorage.setItem('tablero',nombre);
                     window.location.href = "/tablero.html"
                 } else {

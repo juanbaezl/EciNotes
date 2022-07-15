@@ -1,5 +1,7 @@
 package co.edu.escuelaing.repository;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +25,12 @@ public interface CuadernilloRepo extends JpaRepository<Cuadernillo, Long> {
             @Param("publico") boolean publico,
             @Param("editable") boolean editable,
             @Param("materias") long materias);
+
+    @Query("Select c from Cuadernillo c where c.nombre = :nombre")
+    Optional<Cuadernillo> findByName(@Param("nombre") String nombre);
+
+    @Modifying
+    @Query("update Cuadernillo c set c.tablero = :tablero where c.nombre = :nombre")
+    @Transactional
+    void updateTablero(@Param(value = "nombre") String nombre, @Param(value = "tablero") String tablero);
 }

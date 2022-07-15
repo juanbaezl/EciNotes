@@ -26,7 +26,7 @@ public class Cuadernillo implements Serializable {
     @Column(name = "nombre", unique = true, nullable = false)
     private String nombre;
 
-    @Column(name = "tablero", nullable = false)
+    @Column(name = "tablero", nullable = false, columnDefinition = "TEXT")
     private String tablero;
 
     @Column(name = "publico", nullable = false)
@@ -109,4 +109,11 @@ public class Cuadernillo implements Serializable {
         this.materias = materias;
     }
 
+    @Override
+    public String toString() {
+        return "{\"id\":\"" + id + "\",\"admin\":\"" + administrador.getId() + "\",\"nombre\":\"" + nombre
+                + "\",\"tablero\":\""
+                + tablero + "\",\"publico\":\""
+                + publico + "\",\"editable\":\"" + editable + "\",\"materias\":\"" + materias.getId() + "\"}";
+    }
 }

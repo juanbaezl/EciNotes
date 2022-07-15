@@ -36,4 +36,12 @@ public class CuadernilloServices {
         return cuadernilloRepo.findById(id);
     }
 
+    public Optional<Cuadernillo> getCuadernilloByName(String name) {
+        return cuadernilloRepo.findByName(name);
+    }
+
+    public void updateTablero(String nombre, String tablero) {
+        cuadernilloRepo.updateTablero(nombre, tablero);
+    }
+
 }

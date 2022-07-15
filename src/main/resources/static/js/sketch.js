@@ -2,10 +2,37 @@ let stompClient;
 let canvas;
 const button = 'button';
 const idSession = sessionStorage.getItem('id');
+const tablero = sessionStorage.getItem('tablero');
 let click = false;
 let erase = false;
 let text = false;
 let draw = true;
+
+function getTablero(){
+    fetch('/api/cuadernillo/getTablero?nombre='+tablero,
+    {
+        method: 'GET'
+    }).then((data) => data.json())
+    .then((data) =>{
+        canvas.loadFromJSON(data,function(){
+            var objects = canvas.getObjects();
+            fabric.Object.__uid = objects[objects.length-1].id + 1;
+            canvas.renderAll();
+        });
+      });
+}
+
+function save(tableroC){
+    var formData = new FormData();
+    formData.append('nombre', tablero);
+    formData.append('tablero',tableroC); 
+    fetch('/api/cuadernillo/updateTablero',
+            { 
+                method: "POST",
+                body: formData
+            });
+    
+}
 
 function stomp(){
         var socket = new SockJS("/stompEndpoint");
@@ -53,8 +80,7 @@ function stomp(){
                         canvas.renderAll();
                     });
                 }
-                console.log('Aqui:');
-                console.log(JSON.stringify(canvas.toJSON(['id','activeId','action'])));
+                save(JSON.stringify(canvas.toJSON(['id','activeId','action'])));
             });
         });
         
@@ -206,13 +232,13 @@ class Board extends React.Component{
 
     componentDidMount() {
         stomp();
+        var w = screen.width - 80;
+        var h = screen.height - 120;
         canvas = new fabric.Canvas('canvas', {
                 width: w,
                 height: h,
-                isDrawingMode: false,
-                backgroundColor: "#D5DFE9",
-                freeDrawingCursor: "crosshair"
 		});
+        getTablero();
         canvas.selection = false;       
         canvas.freeDrawingBrush.width = this.state.size;
         canvas.defaultCursor = 'crosshair';
