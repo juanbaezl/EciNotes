@@ -71,7 +71,7 @@ class Cuadernillo extends React.Component {
     if (this.state.isLoaded) {
       return <div className="galeria">{cuaderno}</div>;
     } else {
-      return <h1>Charging...</h1>;
+      return <h1>Loading...</h1>;
     }
   }
 }

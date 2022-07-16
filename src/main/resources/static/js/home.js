@@ -139,7 +139,7 @@ class NavBarText extends React.Component {
               <select className="desplegable">
                 <option>Todos</option>
                 <option>ARSW</option>
-                <option>AREP</option>
+                <option>CVDS</option>
               </select>
               <div className="divCuadernillos">
                 <Cuadernillo user={false} />
