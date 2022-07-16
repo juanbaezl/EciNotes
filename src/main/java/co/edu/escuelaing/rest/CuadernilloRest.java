@@ -1,5 +1,6 @@
 package co.edu.escuelaing.rest;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.websocket.server.PathParam;
@@ -31,6 +32,16 @@ public class CuadernilloRest {
     private String getByName(@PathParam("nombre") String nombre) {
         Optional<Cuadernillo> cuadernillo = cuadernilloServices.getCuadernilloByName(nombre);
         return cuadernillo.isPresent() ? cuadernillo.get().getTablero() : "{}";
+    }
+
+    @GetMapping("/getCuadernillos")
+    private List<Cuadernillo> getCuadernillos(@PathParam("user") Long user) {
+        return cuadernilloServices.getParticipantes(user);
+    }
+
+    @GetMapping("/getPublics")
+    private List<Cuadernillo> getPublics() {
+        return cuadernilloServices.getPublics();
     }
 
     @PostMapping("/updateTablero")

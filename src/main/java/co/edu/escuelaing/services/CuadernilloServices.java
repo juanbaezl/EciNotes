@@ -1,19 +1,25 @@
 package co.edu.escuelaing.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import co.edu.escuelaing.entities.Cuadernillo;
 import co.edu.escuelaing.repository.CuadernilloRepo;
+import co.edu.escuelaing.repository.ParticipantesRepo;
 
 @Service
 public class CuadernilloServices {
 
     @Autowired
     private CuadernilloRepo cuadernilloRepo;
+
+    @Autowired
+    private ParticipantesRepo participantesRepo;
 
     public Cuadernillo create(Cuadernillo cuadernillo) {
         return cuadernilloRepo.save(cuadernillo);
@@ -42,6 +48,23 @@ public class CuadernilloServices {
 
     public void updateTablero(String nombre, String tablero) {
         cuadernilloRepo.updateTablero(nombre, tablero);
+    }
+
+    public List<Cuadernillo> getParticipantes(Long usuarioId) {
+        ArrayList<Cuadernillo> res = new ArrayList<>();
+        try {
+            res.addAll(cuadernilloRepo.findByUser(usuarioId));
+            res.addAll(participantesRepo.findCuadernillosByUser(usuarioId)
+                    .stream()
+                    .map((participante) -> participante.getCuadernilloId()).collect(Collectors.toList()));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return res;
+    }
+
+    public List<Cuadernillo> getPublics() {
+        return cuadernilloRepo.getPublics();
     }
 
 }

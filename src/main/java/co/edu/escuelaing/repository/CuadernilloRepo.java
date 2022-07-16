@@ -1,5 +1,6 @@
 package co.edu.escuelaing.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -28,6 +29,12 @@ public interface CuadernilloRepo extends JpaRepository<Cuadernillo, Long> {
 
     @Query("Select c from Cuadernillo c where c.nombre = :nombre")
     Optional<Cuadernillo> findByName(@Param("nombre") String nombre);
+
+    @Query("Select c from Cuadernillo c where c.publico = true")
+    List<Cuadernillo> getPublics();
+
+    @Query("Select c from Cuadernillo c JOIN c.administrador u where u.id = :administrador")
+    List<Cuadernillo> findByUser(@Param("administrador") Long administrador);
 
     @Modifying
     @Query("update Cuadernillo c set c.tablero = :tablero where c.nombre = :nombre")
