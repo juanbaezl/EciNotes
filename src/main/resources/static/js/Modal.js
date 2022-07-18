@@ -48,7 +48,6 @@ class Modal extends React.Component {
       body: formData,
     }).then((data) => {
       if (data.status == 200) {
-        alert(this.state.nombreCuadernillo);
         sessionStorage.setItem("tablero", this.state.nombreCuadernillo);
         window.location.href = "/tablero.html";
       } else {

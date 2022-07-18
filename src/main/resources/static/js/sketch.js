@@ -52,7 +52,6 @@ function stomp() {
       } else if (msg.action == 2) {
         changeText(msg);
       }
-      save(JSON.stringify(canvas.toJSON(["id", "activeId", "action"])));
     });
   });
 }
@@ -98,6 +97,7 @@ function changeText(msg) {
 
 function message(msg) {
   stompClient.send("/topic/tablero", {}, msg);
+  save(JSON.stringify(canvas.toJSON(["id", "activeId", "action"])));
 }
 
 function filtObjects(id) {

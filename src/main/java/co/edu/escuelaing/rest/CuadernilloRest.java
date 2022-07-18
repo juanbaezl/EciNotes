@@ -32,7 +32,6 @@ public class CuadernilloRest {
             @PathParam("editable") boolean editable, @PathParam("materias") Long materias,
             @PathParam("participantes") String participantes) {
         cuadernilloServices.create(administrador, nombre, tablero, publico, editable, materias);
-        System.out.println(Arrays.asList(participantes.split(",")));
         participantesServices.createByList(Arrays.asList(participantes.split(",")), nombre);
     }
 
