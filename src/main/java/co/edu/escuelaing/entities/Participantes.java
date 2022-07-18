@@ -16,6 +16,9 @@ public class Participantes implements Serializable {
     @EmbeddedId
     public EventId id;
 
+    public Participantes() {
+    }
+
     public Participantes(EventId id) {
         this.id = id;
     }

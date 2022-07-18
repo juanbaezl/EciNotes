@@ -46,18 +46,18 @@ function stomp() {
         });
       }
       if (msg.action == 0) {
-        addObject();
+        addObject(msg);
       } else if (msg.action == 1) {
-        deleteObject();
+        deleteObject(msg);
       } else if (msg.action == 2) {
-        changeText();
+        changeText(msg);
       }
       save(JSON.stringify(canvas.toJSON(["id", "activeId", "action"])));
     });
   });
 }
 
-function addObject() {
+function addObject(msg) {
   fabric.util.enlivenObjects([msg], function (objects) {
     objects.forEach(function (o) {
       o.set({
@@ -83,13 +83,13 @@ function addObject() {
   canvas.renderAll();
 }
 
-function deleteObject() {
+function deleteObject(msg) {
   filtObjects(msg.id).forEach(function (objFilt) {
     canvas.remove(objFilt);
   });
 }
 
-function changeText() {
+function changeText(msg) {
   filtObjects(msg.id).forEach(function (objFilt) {
     objFilt.set("text", msg.target.text);
     canvas.renderAll();

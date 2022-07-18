@@ -103,7 +103,7 @@ body{
     border-radius: 10px;
     margin: 10px 10px;
     padding: 5%;
-    background-image: linear-gradient(to right, #bfe9ff 0%, #f08ff0 55%, #ff6e7f 100%);
+    background-image: linear-gradient(to right, #42d7ee 0%, #D5DFE9 35%, #f18ab4 100%);
     transition: 0.5s;
     background-size: 150% auto;
 }
@@ -131,7 +131,7 @@ body{
     justify-content: center;
     display: flex;
     width: 100%;
-    top: 35%;
+    top: 20%;
     left: 0;
 }
 .dialog{
@@ -159,4 +159,11 @@ body{
 .buttonExit {
     font-size: 2.5em;
     color: white;
+}
+
+.labelPart{
+    text-decoration: none;
+    background-color: transparent;
+    color: white;
+    border: none;
 }

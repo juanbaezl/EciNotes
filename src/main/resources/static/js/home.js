@@ -5,9 +5,11 @@ class NavBarText extends React.Component {
       zona: 0,
       name: "",
       dialog: false,
+      filter: -1,
     };
     this.zonaClick = this.zonaClick.bind(this);
     this.openModal = this.openModal.bind(this);
+    this.handleMateria = this.handleMateria.bind(this);
     this.UNSAFE_componentWillMount = this.UNSAFE_componentWillMount.bind(this);
   }
 
@@ -38,6 +40,9 @@ class NavBarText extends React.Component {
   }
   openModal() {
     this.setState({ dialog: true });
+  }
+  handleMateria(event) {
+    this.setState({ filter: event.target.value });
   }
 
   render() {
@@ -109,7 +114,7 @@ class NavBarText extends React.Component {
                 </span>
               </button>
               <div className="divCuadernillos">
-                <Cuadernillo user={true} />
+                <Cuadernillo user={true} filter={-1} />
               </div>
             </div>
             <Modal show={this.state.dialog} />
@@ -136,13 +141,13 @@ class NavBarText extends React.Component {
             </div>
             <div className="divContent">
               <h1>Comunidad ECI</h1>
-              <select className="desplegable">
-                <option>Todos</option>
-                <option>ARSW</option>
-                <option>CVDS</option>
+              <select className="desplegable" onChange={this.handleMateria}>
+                <option value={-1}>Todos</option>
+                <option value={0}>ARSW</option>
+                <option value={1}>CVDS</option>
               </select>
               <div className="divCuadernillos">
-                <Cuadernillo user={false} />
+                <Cuadernillo user={false} filter={this.state.filter} />
               </div>
             </div>
           </div>

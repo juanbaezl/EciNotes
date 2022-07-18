@@ -7,6 +7,9 @@ class Modal extends React.Component {
       materia: 0,
       publico: false,
       editable: false,
+      opt: [],
+      elegidos: [],
+      labels: [],
     };
     this.closeModal = this.closeModal.bind(this);
     this.redireccionTablero = this.redireccionTablero.bind(this);
@@ -14,6 +17,8 @@ class Modal extends React.Component {
     this.handleChangeMateria = this.handleChangeMateria.bind(this);
     this.handleChangePublico = this.handleChangePublico.bind(this);
     this.handleChangeEditable = this.handleChangeEditable.bind(this);
+    this.desplegarNombres = this.desplegarNombres.bind(this);
+    this.handleClickParticipante = this.handleClickParticipante.bind(this);
   }
 
   redireccionTablero() {
@@ -30,7 +35,6 @@ class Modal extends React.Component {
   }
 
   fetchData(tablero) {
-    this.setState({ nombreCuadernillo: "" });
     var formData = new FormData();
     formData.append("tablero", tablero);
     formData.append("nombre", this.state.nombreCuadernillo);
@@ -38,11 +42,13 @@ class Modal extends React.Component {
     formData.append("publico", this.state.publico);
     formData.append("editable", this.state.editable);
     formData.append("materias", this.state.materia);
+    formData.append("participantes", this.state.elegidos.join(","));
     fetch("/api/cuadernillo/save", {
       method: "POST",
       body: formData,
     }).then((data) => {
       if (data.status == 200) {
+        alert(this.state.nombreCuadernillo);
         sessionStorage.setItem("tablero", this.state.nombreCuadernillo);
         window.location.href = "/tablero.html";
       } else {
@@ -69,6 +75,53 @@ class Modal extends React.Component {
 
   handleChangeEditable(event) {
     this.setState({ editable: event.target.checked });
+  }
+
+  handleClickParticipante(event) {
+    var value = event.target.value;
+    var label = (
+      <div key={value}>
+        <input
+          type="text"
+          key={value}
+          value={value}
+          className="labelPart"
+          readOnly
+        />
+      </div>
+    );
+    var elegidosFunc = this.state.elegidos.concat([value]);
+    var labelsFunc = this.state.labels.concat([label]);
+    var removed = this.state.opt.filter((option) => {
+      return option.props.value != value;
+    });
+    this.setState({
+      opt: removed,
+      elegidos: elegidosFunc,
+      labels: labelsFunc,
+    });
+  }
+
+  desplegarNombres() {
+    var optFunc = [];
+    fetch("/api/usuario/users?id=" + sessionStorage.getItem("id"), {
+      method: "GET",
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        for (let user of data) {
+          optFunc.push(
+            <option key={user.username} value={user.username}>
+              {user.username}
+            </option>
+          );
+        }
+      });
+    this.setState({ opt: optFunc });
+  }
+
+  UNSAFE_componentWillMount() {
+    this.desplegarNombres();
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -121,6 +174,14 @@ class Modal extends React.Component {
                 checked={this.state.editable}
                 onChange={this.handleChangeEditable}
               />
+            </div>
+            <div className="divSep">
+              <label className="labelDialog">Participantes: </label>
+              <select onChange={this.handleClickParticipante}>
+                <option value={-1}>Seleccione</option>
+                {this.state.opt}
+              </select>
+              {this.state.labels}
             </div>
             <div className="divSep">
               <button

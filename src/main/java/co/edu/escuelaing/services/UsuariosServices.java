@@ -37,4 +37,8 @@ public class UsuariosServices {
     public Optional<Usuario> getUserByNamePasswd(String username, String passwd) {
         return usuarioRepo.findByName(username, passwd);
     }
+
+    public List<Usuario> getAllUsersExceptList(Long id) {
+        return usuarioRepo.getUsersMinusId(id);
+    }
 }

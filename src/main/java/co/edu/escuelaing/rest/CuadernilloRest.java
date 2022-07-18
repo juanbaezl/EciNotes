@@ -1,5 +1,6 @@
 package co.edu.escuelaing.rest;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.escuelaing.entities.Cuadernillo;
 import co.edu.escuelaing.services.CuadernilloServices;
+import co.edu.escuelaing.services.ParticipantesServices;
 
 @RestController
 @RequestMapping("/api/cuadernillo")
@@ -21,11 +23,17 @@ public class CuadernilloRest {
     @Autowired
     private CuadernilloServices cuadernilloServices;
 
+    @Autowired
+    private ParticipantesServices participantesServices;
+
     @PostMapping("/save")
     private void save(@PathParam("tablero") String tablero, @PathParam("nombre") String nombre,
             @PathParam("administrador") Long administrador, @PathParam("publico") boolean publico,
-            @PathParam("editable") boolean editable, @PathParam("materias") Long materias) {
+            @PathParam("editable") boolean editable, @PathParam("materias") Long materias,
+            @PathParam("participantes") String participantes) {
         cuadernilloServices.create(administrador, nombre, tablero, publico, editable, materias);
+        System.out.println(Arrays.asList(participantes.split(",")));
+        participantesServices.createByList(Arrays.asList(participantes.split(",")), nombre);
     }
 
     @GetMapping("/getTablero")
