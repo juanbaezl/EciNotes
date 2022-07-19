@@ -51,9 +51,11 @@ body{
     margin: 20px auto;
 }
 
-.divExit{
-    margin-top: 10px;
-    margin-left: 44%;
+.divConf{
+    position: absolute;
+    top: 0;
+    left: 90%;
+    display: flex;
 }
 
 .button{

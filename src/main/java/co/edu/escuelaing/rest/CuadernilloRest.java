@@ -1,5 +1,6 @@
 package co.edu.escuelaing.rest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -36,9 +37,13 @@ public class CuadernilloRest {
     }
 
     @GetMapping("/getTablero")
-    private String getByName(@PathParam("nombre") String nombre) {
+    private List<Cuadernillo> getByName(@PathParam("nombre") String nombre) {
         Optional<Cuadernillo> cuadernillo = cuadernilloServices.getCuadernilloByName(nombre);
-        return cuadernillo.isPresent() ? cuadernillo.get().getTablero() : "{}";
+        ArrayList<Cuadernillo> cuadernillos = new ArrayList<>();
+        if (cuadernillo.isPresent()) {
+            cuadernillos.add(cuadernillo.get());
+        }
+        return cuadernillos;
     }
 
     @GetMapping("/getCuadernillos")

@@ -19,6 +19,7 @@ class Modal extends React.Component {
     this.handleChangeEditable = this.handleChangeEditable.bind(this);
     this.desplegarNombres = this.desplegarNombres.bind(this);
     this.handleClickParticipante = this.handleClickParticipante.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   redireccionTablero() {
@@ -75,11 +76,35 @@ class Modal extends React.Component {
   handleChangeEditable(event) {
     this.setState({ editable: event.target.checked });
   }
+  handleDelete(value) {
+    var optionsFunc = this.state.opt.concat(
+      <option key={value} value={value}>
+        {value}
+      </option>
+    );
+    var removedLabels = this.state.labels.filter((label) => {
+      return label.key != value;
+    });
+    var removedElegidos = this.state.elegidos.filter((elegidos) => {
+      return elegidos != value;
+    });
+    this.setState({
+      opt: optionsFunc,
+      elegidos: removedElegidos,
+      labels: removedLabels,
+    });
+  }
 
   handleClickParticipante(event) {
     var value = event.target.value;
     var label = (
       <div key={value}>
+        <button
+          className="deleteButton"
+          onClick={this.handleDelete.bind(this, value)}
+        >
+          X
+        </button>
         <input
           type="text"
           key={value}

@@ -7,6 +7,7 @@ let click = false;
 let erase = false;
 let text = false;
 let draw = true;
+let editable = false;
 
 function getTablero() {
   fetch("/api/cuadernillo/getTablero?nombre=" + tablero, {
@@ -14,7 +15,8 @@ function getTablero() {
   })
     .then((data) => data.json())
     .then((data) => {
-      canvas.loadFromJSON(data, function () {
+      editable = data[0].editable;
+      canvas.loadFromJSON(data[0].tablero, function () {
         var objects = canvas.getObjects();
         if (objects.length > 0) {
           fabric.Object.__uid = objects[objects.length - 1].id + 1;
@@ -38,7 +40,7 @@ function stomp() {
   var socket = new SockJS("/stompEndpoint");
   stompClient = Stomp.over(socket);
   stompClient.connect({}, function (frame) {
-    stompClient.subscribe("/topic/tablero", function (event) {
+    stompClient.subscribe("/topic/" + tablero, function (event) {
       var msg = JSON.parse(event.body);
       if (msg.build == 1) {
         filtObjects(msg.id).forEach(function (objFilt) {
@@ -96,7 +98,7 @@ function changeText(msg) {
 }
 
 function message(msg) {
-  stompClient.send("/topic/tablero", {}, msg);
+  stompClient.send("/topic/" + tablero, {}, msg);
   save(JSON.stringify(canvas.toJSON(["id", "activeId", "action"])));
 }
 
@@ -245,7 +247,6 @@ class Board extends React.Component {
   }
 
   componentDidMount() {
-    stomp();
     var w = screen.width - 80;
     var h = screen.height - 120;
     canvas = new fabric.Canvas("canvas", {
@@ -253,10 +254,15 @@ class Board extends React.Component {
       height: h,
     });
     getTablero();
+    if (editable) {
+      stomp();
+      canvas.defaultCursor = "crosshair";
+      canvas.hoverCursor = "crosshair";
+    } else {
+      this.select();
+    }
     canvas.selection = false;
     canvas.freeDrawingBrush.width = this.state.size;
-    canvas.defaultCursor = "crosshair";
-    canvas.hoverCursor = "crosshair";
     canvas.on("mouse:down", function (e) {
       click = true;
       if (text) {
@@ -321,87 +327,106 @@ class Board extends React.Component {
         <nav className="tools">
           <h1 className="titulo">Cuadernillo</h1>
           <div className="fuente">
-            <div className="divSelect">
-              <button
-                type="button"
-                className={this.state.selectReact}
-                onClick={this.select}
-              >
-                <span className="buttonIcon">
-                  <img src="img/toolSelect.png" />
-                </span>
-              </button>
-            </div>
-            <div className="divSelect">
-              <button
-                type="button"
-                className={this.state.textReact}
-                onClick={this.text}
-              >
-                <span className="buttonIcon">
-                  <img src="img/toolText.png" />
-                </span>
-              </button>
-            </div>
-            <div className="divSelect">
-              <button
-                type="button"
-                className={this.state.drawReact}
-                onClick={this.draw}
-              >
-                <span className="buttonIcon">
-                  <img src="img/toolPencil.png" />
-                </span>
-              </button>
-            </div>
-            <div className="divSelect">
-              <button
-                type="button"
-                className={this.state.eraseReact}
-                onClick={this.erase}
-              >
-                <span className="buttonIcon">
-                  <img src="img/toolEraser.png" />
-                </span>
-              </button>
-            </div>
-            <div className="divFont">
-              <center>
-                <label className="labelFont">Font Size:</label>
-                <input
-                  id="intput"
-                  className="inputInt"
-                  type="int"
-                  required={true}
-                  value={this.state.size}
-                  onChange={this.handleSizeChange}
-                  maxLength="2"
-                ></input>
-              </center>
-            </div>
-            <div className="divFont">
-              <center>
-                <label className="labelFont">Color:</label>
-                <input
-                  id="colorput"
-                  className="inputColor"
-                  type="color"
-                  value={this.state.color}
-                  onChange={this.handleColorChange}
-                />
-              </center>
-            </div>
+            {editable ? (
+              <div>
+                <div className="divSelect">
+                  <button
+                    type="button"
+                    className={this.state.selectReact}
+                    onClick={this.select}
+                  >
+                    <span className="buttonIcon">
+                      <img src="img/toolSelect.png" />
+                    </span>
+                  </button>
+                </div>
+                <div className="divSelect">
+                  <button
+                    type="button"
+                    className={this.state.textReact}
+                    onClick={this.text}
+                  >
+                    <span className="buttonIcon">
+                      <img src="img/toolText.png" />
+                    </span>
+                  </button>
+                </div>
+                <div className="divSelect">
+                  <button
+                    type="button"
+                    className={this.state.drawReact}
+                    onClick={this.draw}
+                  >
+                    <span className="buttonIcon">
+                      <img src="img/toolPencil.png" />
+                    </span>
+                  </button>
+                </div>
+                <div className="divSelect">
+                  <button
+                    type="button"
+                    className={this.state.eraseReact}
+                    onClick={this.erase}
+                  >
+                    <span className="buttonIcon">
+                      <img src="img/toolEraser.png" />
+                    </span>
+                  </button>
+                </div>
+                <div className="divFont">
+                  <center>
+                    <label className="labelFont">Font Size:</label>
+                    <input
+                      id="intput"
+                      className="inputInt"
+                      type="int"
+                      required={true}
+                      value={this.state.size}
+                      onChange={this.handleSizeChange}
+                      maxLength="2"
+                    ></input>
+                  </center>
+                </div>
+                <div className="divFont">
+                  <center>
+                    <label className="labelFont">Color:</label>
+                    <input
+                      id="colorput"
+                      className="inputColor"
+                      type="color"
+                      value={this.state.color}
+                      onChange={this.handleColorChange}
+                    />
+                  </center>
+                </div>
+              </div>
+            ) : (
+              <div className="espacio"></div>
+            )}
           </div>
-          <div className="divExit">
-            <button
-              type="button"
-              className="button"
-              onClick={this.redireccionHome}
-            >
-              <span className="buttonIcon">
-                <ion-icon name="arrow-back-circle-outline"></ion-icon>
-              </span>
-            </button>
+          <div className="divConf">
+            <div>
+              <button
+                type="button"
+                className="button"
+                onClick={this.redireccionHome}
+              >
+                <span className="buttonIcon">
+                  <ion-icon name="cog-outline"></ion-icon>
+                </span>
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                className="button"
+                onClick={this.redireccionHome}
+              >
+                <span className="buttonIcon">
+                  <ion-icon name="arrow-back-circle-outline"></ion-icon>
+                </span>
+              </button>
+            </div>
           </div>
         </nav>
         <canvas id="canvas" />

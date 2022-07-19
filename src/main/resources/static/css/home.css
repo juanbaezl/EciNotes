@@ -167,3 +167,14 @@ body{
     color: white;
     border: none;
 }
+
+.deleteButton{
+    background-color: #db5824;
+    border: none;
+    outline: none;
+    border-radius: 100%;
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
