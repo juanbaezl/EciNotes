@@ -52,7 +52,7 @@ Para visualizar la documentación se debe ejecutar el siguiente comando:
 mvn javadoc:javadoc
 ```
 
-Una vez se realice este comando, se debe buscar en la siguiente ruta "target\site\apidocs\index.html"
+Una vez se realice este comando, se debe buscar en la siguiente ruta "target\site\apidocs\index.html".
 
 ## Estructura de Archivos
 
