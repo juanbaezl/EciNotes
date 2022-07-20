@@ -110,7 +110,7 @@ Una vez se realice este comando, se debe buscar en la siguiente ruta "target\sit
 
 ## Diagramas de Clases
 
-![Diagrama de Clases](img\Diagrama_de_Clases_Controller.svg)
+![Diagrama de Clases](img/Diagrama_de_Clases_Controller.svg)
 
 ### Configurator
 
