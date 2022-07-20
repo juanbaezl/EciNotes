@@ -50,6 +50,10 @@ public class CuadernilloServices {
         cuadernilloRepo.updateTablero(nombre, tablero);
     }
 
+    public void updateBooleans(String nombre, boolean publico, boolean editable) {
+        cuadernilloRepo.updateBooleans(nombre, publico, editable);
+    }
+
     public List<Cuadernillo> getParticipantes(Long usuarioId) {
         ArrayList<Cuadernillo> res = new ArrayList<>();
         try {

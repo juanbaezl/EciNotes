@@ -7,16 +7,16 @@ let click = false;
 let erase = false;
 let text = false;
 let draw = true;
-let editable = false;
+let info = null;
 
-function getTablero() {
-  fetch("/api/cuadernillo/getTablero?nombre=" + tablero, {
+async function getTablero() {
+  await fetch("/api/cuadernillo/getTablero?nombre=" + tablero, {
     method: "GET",
   })
     .then((data) => data.json())
     .then((data) => {
-      editable = data[0].editable;
-      canvas.loadFromJSON(data[0].tablero, function () {
+      info = data[0];
+      canvas.loadFromJSON(info.tablero, function () {
         var objects = canvas.getObjects();
         if (objects.length > 0) {
           fabric.Object.__uid = objects[objects.length - 1].id + 1;
@@ -42,7 +42,9 @@ function stomp() {
   stompClient.connect({}, function (frame) {
     stompClient.subscribe("/topic/" + tablero, function (event) {
       var msg = JSON.parse(event.body);
-      if (msg.build == 1) {
+      if (msg.build == 0) {
+        location.reload();
+      } else if (msg.build == 1) {
         filtObjects(msg.id).forEach(function (objFilt) {
           objFilt.activeId = msg.activeId;
         });
@@ -155,13 +157,6 @@ function eraseMessage(e) {
   }
 }
 
-function initMessage() {
-  var build = {
-    build: 0,
-  };
-  message(JSON.stringify(build));
-}
-
 class Board extends React.Component {
   constructor(props) {
     super(props);
@@ -172,6 +167,10 @@ class Board extends React.Component {
       drawReact: button + " active",
       textReact: button,
       eraseReact: button,
+      public: false,
+      editable: false,
+      show: false,
+      participante: false,
     };
     this.handleSizeChange = this.handleSizeChange.bind(this);
     this.handleColorChange = this.handleColorChange.bind(this);
@@ -180,6 +179,12 @@ class Board extends React.Component {
     this.select = this.select.bind(this);
     this.text = this.text.bind(this);
     this.resetCSS = this.resetCSS.bind(this);
+    this.prepareModal = this.prepareModal.bind(this);
+    this.handleChangePublico = this.handleChangePublico.bind(this);
+    this.handleChangeEditable = this.handleChangeEditable.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.openModal = this.openModal.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
   }
 
   handleColorChange(event) {
@@ -253,9 +258,9 @@ class Board extends React.Component {
       width: w,
       height: h,
     });
-    getTablero();
-    if (editable) {
-      stomp();
+    this.prepareModal();
+    stomp();
+    if (this.state.editable) {
       canvas.defaultCursor = "crosshair";
       canvas.hoverCursor = "crosshair";
     } else {
@@ -315,10 +320,54 @@ class Board extends React.Component {
     });
   }
 
+  async prepareModal() {
+    await getTablero();
+    this.setState({
+      public: info.publico,
+      editable: info.editable,
+      participante: idSession != info.administrador.id,
+    });
+  }
+
+  handleChangePublico(event) {
+    if (!this.state.participante) {
+      this.setState({ publico: event.target.checked });
+    }
+  }
+
+  handleChangeEditable(event) {
+    if (!this.state.participante) {
+      this.setState({ editable: event.target.checked });
+    }
+  }
+
+  openModal() {
+    this.setState({ show: true });
+  }
+
+  closeModal() {
+    this.setState({ show: false });
+  }
+
   UNSAFE_componentWillMount() {
     if (sessionStorage.getItem("log") != "true") {
       window.location.href = "/index.html";
     }
+  }
+
+  handleUpdate() {
+    var formData = new FormData();
+    formData.append("nombre", tablero);
+    formData.append("publico", this.state.public);
+    formData.append("editable", this.state.editable);
+    fetch("/api/cuadernillo/updateBooleans", {
+      method: "POST",
+      body: formData,
+    });
+    var build = {
+      build: 0,
+    };
+    message(JSON.stringify(build));
   }
 
   render() {
@@ -326,91 +375,85 @@ class Board extends React.Component {
       <div>
         <nav className="tools">
           <h1 className="titulo">Cuadernillo</h1>
-          <div className="fuente">
-            {editable ? (
-              <div>
-                <div className="divSelect">
-                  <button
-                    type="button"
-                    className={this.state.selectReact}
-                    onClick={this.select}
-                  >
-                    <span className="buttonIcon">
-                      <img src="img/toolSelect.png" />
-                    </span>
-                  </button>
-                </div>
-                <div className="divSelect">
-                  <button
-                    type="button"
-                    className={this.state.textReact}
-                    onClick={this.text}
-                  >
-                    <span className="buttonIcon">
-                      <img src="img/toolText.png" />
-                    </span>
-                  </button>
-                </div>
-                <div className="divSelect">
-                  <button
-                    type="button"
-                    className={this.state.drawReact}
-                    onClick={this.draw}
-                  >
-                    <span className="buttonIcon">
-                      <img src="img/toolPencil.png" />
-                    </span>
-                  </button>
-                </div>
-                <div className="divSelect">
-                  <button
-                    type="button"
-                    className={this.state.eraseReact}
-                    onClick={this.erase}
-                  >
-                    <span className="buttonIcon">
-                      <img src="img/toolEraser.png" />
-                    </span>
-                  </button>
-                </div>
-                <div className="divFont">
-                  <center>
-                    <label className="labelFont">Font Size:</label>
-                    <input
-                      id="intput"
-                      className="inputInt"
-                      type="int"
-                      required={true}
-                      value={this.state.size}
-                      onChange={this.handleSizeChange}
-                      maxLength="2"
-                    ></input>
-                  </center>
-                </div>
-                <div className="divFont">
-                  <center>
-                    <label className="labelFont">Color:</label>
-                    <input
-                      id="colorput"
-                      className="inputColor"
-                      type="color"
-                      value={this.state.color}
-                      onChange={this.handleColorChange}
-                    />
-                  </center>
-                </div>
+          {this.state.editable ? (
+            <div className="fuente">
+              <div className="divSelect">
+                <button
+                  type="button"
+                  className={this.state.selectReact}
+                  onClick={this.select}
+                >
+                  <span className="buttonIcon">
+                    <img src="img/toolSelect.png" />
+                  </span>
+                </button>
               </div>
-            ) : (
-              <div className="espacio"></div>
-            )}
-          </div>
+              <div className="divSelect">
+                <button
+                  type="button"
+                  className={this.state.textReact}
+                  onClick={this.text}
+                >
+                  <span className="buttonIcon">
+                    <img src="img/toolText.png" />
+                  </span>
+                </button>
+              </div>
+              <div className="divSelect">
+                <button
+                  type="button"
+                  className={this.state.drawReact}
+                  onClick={this.draw}
+                >
+                  <span className="buttonIcon">
+                    <img src="img/toolPencil.png" />
+                  </span>
+                </button>
+              </div>
+              <div className="divSelect">
+                <button
+                  type="button"
+                  className={this.state.eraseReact}
+                  onClick={this.erase}
+                >
+                  <span className="buttonIcon">
+                    <img src="img/toolEraser.png" />
+                  </span>
+                </button>
+              </div>
+              <div className="divFont">
+                <span className="centrador">
+                  <label className="labelFont">Font Size:</label>
+                  <input
+                    id="intput"
+                    className="inputInt"
+                    type="int"
+                    required={true}
+                    value={this.state.size}
+                    onChange={this.handleSizeChange}
+                    maxLength="2"
+                  ></input>
+                </span>
+              </div>
+              <div className="divFont">
+                <span className="centrador">
+                  <label className="labelFont">Color:</label>
+                  <input
+                    id="colorput"
+                    className="inputColor"
+                    type="color"
+                    value={this.state.color}
+                    onChange={this.handleColorChange}
+                  />
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="espacio"></div>
+          )}
           <div className="divConf">
             <div>
-              <button
-                type="button"
-                className="button"
-                onClick={this.redireccionHome}
-              >
+              <button type="button" className="button" onClick={this.openModal}>
                 <span className="buttonIcon">
                   <ion-icon name="cog-outline"></ion-icon>
                 </span>
@@ -430,6 +473,59 @@ class Board extends React.Component {
           </div>
         </nav>
         <canvas id="canvas" />
+        {this.state.show ? (
+          <div id="conf" className="divDialog">
+            <div className="dialog">
+              <div className="divTitle">
+                <h1>{tablero}</h1>
+              </div>
+              <div className="divSep">
+                <label className="labelDialog">Publico:</label>
+                <input
+                  type="checkbox"
+                  className="inputCheck"
+                  checked={this.state.public}
+                  onChange={this.handleChangePublico}
+                />
+              </div>
+              <div className="divSep">
+                <label className="labelDialog">Editable: </label>
+                <input
+                  type="checkbox"
+                  className="inputCheck"
+                  checked={this.state.editable}
+                  onChange={this.handleChangeEditable}
+                />
+              </div>
+              {!this.state.participante ? (
+                <div className="divSep">
+                  <button
+                    type="button"
+                    className="buttonSave"
+                    onClick={this.handleUpdate}
+                  >
+                    <span className="buttonText"> Guardar </span>
+                  </button>
+                </div>
+              ) : (
+                <div></div>
+              )}
+              <div className="divSep">
+                <button
+                  type="button"
+                  className="button exitDialog"
+                  onClick={this.closeModal}
+                >
+                  <span className="buttonExit">
+                    <ion-icon name="arrow-back-circle-outline"></ion-icon>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div></div>
+        )}
       </div>
     );
   }

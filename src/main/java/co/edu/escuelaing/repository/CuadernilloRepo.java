@@ -40,4 +40,10 @@ public interface CuadernilloRepo extends JpaRepository<Cuadernillo, Long> {
     @Query("update Cuadernillo c set c.tablero = :tablero where c.nombre = :nombre")
     @Transactional
     void updateTablero(@Param(value = "nombre") String nombre, @Param(value = "tablero") String tablero);
+
+    @Modifying
+    @Query("update Cuadernillo c set c.publico = :publico, c.editable = :editable where c.nombre = :nombre")
+    @Transactional
+    void updateBooleans(@Param(value = "nombre") String nombre, @Param(value = "publico") boolean publico,
+            @Param(value = "editable") boolean editable);
 }

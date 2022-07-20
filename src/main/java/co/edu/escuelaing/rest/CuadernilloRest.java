@@ -60,4 +60,10 @@ public class CuadernilloRest {
     private void updateTablero(@PathParam("nombre") String nombre, @PathParam("tablero") String tablero) {
         cuadernilloServices.updateTablero(nombre, tablero);
     }
+
+    @PostMapping("/updateBooleans")
+    private void updateBooleans(@PathParam("nombre") String nombre, @PathParam("publico") boolean publico,
+            @PathParam("editable") boolean editable) {
+        cuadernilloServices.updateBooleans(nombre, publico, editable);
+    }
 }
