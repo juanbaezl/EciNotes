@@ -66,20 +66,41 @@ Una vez se realice este comando, se debe buscar en la siguiente ruta "target\sit
     | | | | | |____escuelaing
     | | | | | | |____configurator
     | | | | | | | |____CollabTableroWebSocketConfig.java
-    | | | | | | |____controller
-    | | | | | | | |____WebSiteController.java
+    | | | | | | |____entities
+    | | | | | | | |____Cuadernillo.java
+    | | | | | | | |____Materias.java
+    | | | | | | | |____Participantes.java
+    | | | | | | | |____Usuario.java
+    | | | | | | |____repository
+    | | | | | | | |____CuadernilloRepo.java
+    | | | | | | | |____MateriasRepo.java
+    | | | | | | | |____ParticipantesRepo.java
+    | | | | | | | |____UsuarioRepo.java
+    | | | | | | |____rest
+    | | | | | | | |____CuadernilloRest.java
+    | | | | | | | |____ParticipantesRest.java
+    | | | | | | | |____UsuarioRest.java
+    | | | | | | | |____WebRest.java
+    | | | | | | |____services
+    | | | | | | | |____CuadernilloServices.java
+    | | | | | | | |____MateriasServices.java
+    | | | | | | | |____ParticipantesServices.java
+    | | | | | | | |____UsuariosServices.java
+    | | | | | | |____WebSiteController.java
     | |____resources
     | | |____static
     | | | |____js
-    | | | | |____fabric.js
+    | | | | |____Modal.js
+    | | | | |____Cuadernillo.js
     | | | | |____FirstComponent.js
-    | | | | |____home.js
-    | | | | |____index.js
-    | | | | |____sketch.js
+    | | | | |____Home.js
+    | | | | |____Index.js
+    | | | | |____Sketch.js
     | | | |____css
     | | | | |____style.css
     | | | | |____home.css
     | | | | |____index.css
+    | | | | |____modal.css
     | | | |____status.html
     | | | |____home.html
     | | | |____index.html
@@ -89,13 +110,27 @@ Una vez se realice este comando, se debe buscar en la siguiente ruta "target\sit
 
 ## Diagramas de Clases
 
-### Controller
-
-![Diagrama de Clases](img/Diagrama_de_Clases_Controller.png)
+![Diagrama de Clases](img\Diagrama_de_Clases_Controller.svg)
 
 ### Configurator
 
 ![Diagrama de Clases](img/Diagrama_de_Clases_Configurator.png)
+
+### Entities
+
+![Diagrama de Clases](img/Diagrama_de_Clases_Entities.svg)
+
+### Repository
+
+![Diagrama de Clases](img/Diagrama_de_Clases_Repository.svg)
+
+### Rest
+
+![Diagrama de Clases](img/Diagrama_de_Clases_Rest.svg)
+
+### Services
+
+![Diagrama de Clases](img/Diagrama_de_Clases_Services.svg)
 
 ## Autor
 
