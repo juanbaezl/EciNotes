@@ -8,6 +8,7 @@ let erase = false;
 let text = false;
 let draw = true;
 let info = null;
+let socket;
 
 async function getTablero() {
   await fetch("/api/cuadernillo/getTablero?nombre=" + tablero, {
@@ -18,6 +19,17 @@ async function getTablero() {
       info = data[0];
       canvas.loadFromJSON(info.tablero, function () {
         var objects = canvas.getObjects();
+        objects.forEach(function (o) {
+          o.set({
+            lockRotation: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockMovementX: true,
+            lockMovementY: true,
+            hasControls: false,
+            hasBorders: false,
+          });
+        });
         if (objects.length > 0) {
           fabric.Object.__uid = objects[objects.length - 1].id + 1;
         }
@@ -36,28 +48,61 @@ function save(tableroC) {
   });
 }
 
-function stomp() {
-  var socket = new SockJS("/stompEndpoint");
-  stompClient = Stomp.over(socket);
-  stompClient.connect({}, function (frame) {
-    stompClient.subscribe("/topic/" + tablero, function (event) {
-      var msg = JSON.parse(event.body);
-      if (msg.build == 0) {
-        location.reload();
-      } else if (msg.build == 1) {
-        filtObjects(msg.id).forEach(function (objFilt) {
-          objFilt.activeId = msg.activeId;
-        });
-      }
-      if (msg.action == 0) {
-        addObject(msg);
-      } else if (msg.action == 1) {
-        deleteObject(msg);
-      } else if (msg.action == 2) {
-        changeText(msg);
-      }
+async function stomp() {
+  await fetch("/api/cuadernillo/conexion?nombre=" + tablero, {
+    method: "GET",
+  })
+    .then((data) => data.json())
+    .then((data) => {
+      socket = new WebSocket(data.value);
     });
-  });
+  socket.onopen = () => {
+    console.log("Conectado");
+  };
+  socket.onmessage = (event) => {
+    var msg = JSON.parse(event.data);
+    if (msg.build == 0) {
+      location.reload();
+    } else if (msg.build == 1) {
+      filtObjects(msg.id).forEach(function (objFilt) {
+        objFilt.activeId = msg.activeId;
+      });
+    }
+    if (msg.action == 0) {
+      addObject(msg);
+    } else if (msg.action == 1) {
+      deleteObject(msg);
+    } else if (msg.action == 2) {
+      changeText(msg);
+    }
+  };
+  socket.onerror = (event) => {
+    console.log("Error: " + event.data);
+  };
+  socket.onclose = () => {
+    console.log("Desconectado");
+  };
+  // var socket = new SockJS("/stompEndpoint");
+  // stompClient = Stomp.over(socket);
+  // stompClient.connect({}, function (frame) {
+  //   stompClient.subscribe("/topic/" + tablero, function (event) {
+  //     var msg = JSON.parse(event.body);
+  //     if (msg.build == 0) {
+  //       location.reload();
+  //     } else if (msg.build == 1) {
+  //       filtObjects(msg.id).forEach(function (objFilt) {
+  //         objFilt.activeId = msg.activeId;
+  //       });
+  //     }
+  //     if (msg.action == 0) {
+  //       addObject(msg);
+  //     } else if (msg.action == 1) {
+  //       deleteObject(msg);
+  //     } else if (msg.action == 2) {
+  //       changeText(msg);
+  //     }
+  //   });
+  // });
 }
 
 function addObject(msg) {
@@ -73,6 +118,7 @@ function addObject(msg) {
         hasControls: false,
         hasBorders: false,
       });
+      console.log(o);
       canvas.add(o);
       if (msg.type === "i-text") {
         if (sessionStorage.getItem("id") == o.activeId) {
@@ -100,8 +146,29 @@ function changeText(msg) {
 }
 
 function message(msg) {
-  stompClient.send("/topic/" + tablero, {}, msg);
-  save(JSON.stringify(canvas.toJSON(["id", "activeId", "action"])));
+  var formData = new FormData();
+  formData.append("hub", tablero);
+  formData.append("msg", msg);
+  fetch("/api/cuadernillo/sendToPubSub", {
+    method: "POST",
+    body: formData,
+  });
+  save(
+    JSON.stringify(
+      canvas.toJSON([
+        "id",
+        "activeId",
+        "action",
+        "lockRotation",
+        "lockScalingX",
+        "lockScalingY",
+        "lockMovementX",
+        "lockMovementY",
+        "hasControls",
+        "hasBorders",
+      ])
+    )
+  );
 }
 
 function filtObjects(id) {
