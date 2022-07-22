@@ -132,6 +132,10 @@ Una vez se realice este comando, se debe buscar en la siguiente ruta "target\sit
 
 ![Diagrama de Clases](img/Diagrama_de_Clases_Services.svg)
 
+### Base de Datos
+
+![Diagrama de Clases](img/Diagrama_Base_De_Datos.png)
+
 ## Autor
 
 - **Juan Carlos Baez Lizarazo** - [juanbaezl](https://github.com/juanbaezl)

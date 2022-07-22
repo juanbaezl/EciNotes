@@ -17,6 +17,9 @@ public class UsuariosServices {
 
     /**
      * Metodo que obtiene todos los usuarios
+     * 
+     * @return Lista de usuarios
+     *
      */
     public List<Usuario> getAllUsers() {
         return usuarioRepo.findAll();
@@ -25,7 +28,7 @@ public class UsuariosServices {
     /**
      * Metodo que obtiene un usuario dado su id
      * 
-     * @param id
+     * @param id id del usuario
      * @return Usuario
      */
     public Optional<Usuario> getUserById(Long id) {
@@ -35,8 +38,8 @@ public class UsuariosServices {
     /**
      * Metodo que obtiene un usuario dado su username y password
      * 
-     * @param username
-     * @param password
+     * @param username username del usuario
+     * @param passwd   password del usuario
      * @return Usuario opcional en caso de existir
      */
     public Optional<Usuario> getUserByNamePasswd(String username, String passwd) {
@@ -46,7 +49,7 @@ public class UsuariosServices {
     /**
      * Metodo que obtiene los usuarios diferentes al id dado
      * 
-     * @param id
+     * @param id id del usuario
      * @return Lista de usuarios
      */
     public List<Usuario> getAllUsersExceptList(Long id) {

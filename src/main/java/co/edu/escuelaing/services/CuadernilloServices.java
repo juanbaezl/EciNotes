@@ -36,6 +36,7 @@ public class CuadernilloServices {
      * 
      * @param cuadernillo entidad del cuadernillo a crear
      * @return Cuadernillo creado
+     *
      */
     public Cuadernillo create(Cuadernillo cuadernillo) {
         return cuadernilloRepo.save(cuadernillo);
@@ -44,12 +45,14 @@ public class CuadernilloServices {
     /**
      * Metodo que crea un cuadernillo con todos sus atributos
      * 
-     * @param administrador
-     * @param nombre
-     * @param tablero
-     * @param publico
-     * @param editable
-     * @param materias
+     * @param administrador id del administrador del cuadernillo
+     * @param nombre        nombre del cuadernillo
+     * @param tablero       tablero del cuadernillo
+     * @param publico       si el cuadernillo es publico o no
+     * @param editable      si el cuadernillo es editable o no
+     * @param materias      lista de materias del cuadernillo
+     * @return Cuadernillo creado
+     *
      */
     public Cuadernillo create(long administrador, String nombre, String tablero, boolean publico, boolean editable,
             long materias) {
@@ -71,7 +74,7 @@ public class CuadernilloServices {
     /**
      * Metodo que obtiene un cuadernillo dado su id
      * 
-     * @param id
+     * @param id id del cuadernillo
      * @return Cuadernillo de forma opcional en caso de encontrarlo
      */
     public Optional<Cuadernillo> getCuadernilloById(Long id) {
@@ -81,7 +84,7 @@ public class CuadernilloServices {
     /**
      * Metodo que obtiene un cuadernillo dado su nombre
      * 
-     * @param nombre
+     * @param name nombre del cuadernillo
      * @return Cuadernillo de forma opcional en caso de encontrarlo
      */
     public Optional<Cuadernillo> getCuadernilloByName(String name) {
@@ -91,8 +94,8 @@ public class CuadernilloServices {
     /**
      * Metodo que actualiza el tablero de un cuadernillo dado su nombre
      * 
-     * @param nombre
-     * @param tablero
+     * @param nombre  nombre del cuadernillo
+     * @param tablero tablero del cuadernillo
      */
     public void updateTablero(String nombre, String tablero) {
         cuadernilloRepo.updateTablero(nombre, tablero);
@@ -101,9 +104,10 @@ public class CuadernilloServices {
     /**
      * Metodo que actualiza los booleanos de un cuadernillo dado su nombre
      * 
-     * @param nombre
-     * @param publico
-     * @param editable
+     * @param nombre   nombre del cuadernillo
+     * @param publico  publico del cuadernillo
+     * @param editable editable del cuadernillo
+     *
      */
     public void updateBooleans(String nombre, boolean publico, boolean editable) {
         cuadernilloRepo.updateBooleans(nombre, publico, editable);
@@ -112,7 +116,7 @@ public class CuadernilloServices {
     /**
      * Metodo que devuelve los cuadernillos de un usuario dado su id
      * 
-     * @param id
+     * @param usuarioId id del usuario
      * @return Lista de cuadernillos del usuario
      */
     public List<Cuadernillo> getParticipantes(Long usuarioId) {

@@ -41,7 +41,7 @@ public class CuadernilloRest {
      * Metodo que devuelve una url de conexion con azure para publicar mensajes dado
      * el nombre del tablero
      *
-     * @param nombre
+     * @param nombre del tablero
      * @return url de conexion
      */
     @GetMapping("/conexion")
@@ -63,8 +63,8 @@ public class CuadernilloRest {
     /**
      * Metodo que envia el mensaje dado al hub de azure dado
      *
-     * @param hub
-     * @param msg
+     * @param hub nombre del tablero
+     * @param msg mensaje a enviar
      */
     @PostMapping("/sendToPubSub")
     public void sendToPubSub(@PathParam("hub") String hub, @PathParam("msg") String msg) {
@@ -78,13 +78,13 @@ public class CuadernilloRest {
     /**
      * Metodo que crea un cuadernillo y sus participantes
      *
-     * @param tablero
-     * @param participantes
-     * @param nombre
-     * @param administrador
-     * @param publico
-     * @param editable
-     * @param materias
+     * @param tablero       tablero
+     * @param participantes lista de participantes
+     * @param nombre        nombre del cuadernillo
+     * @param administrador administrador del cuadernillo
+     * @param publico       publico del cuadernillo
+     * @param editable      editable del cuadernillo
+     * @param materias      materias del cuadernillo
      */
     @PostMapping("/save")
     private void save(@PathParam("tablero") String tablero, @PathParam("nombre") String nombre,
@@ -98,7 +98,7 @@ public class CuadernilloRest {
     /**
      * Metodo que devuelve un cuadernillo dado el nombre
      *
-     * @param nombre
+     * @param nombre nombre del cuadernillo
      * @return lista de cuadernillos con solo un cuadernillo
      */
     @GetMapping("/getTablero")
@@ -114,7 +114,7 @@ public class CuadernilloRest {
     /**
      * Metodo que devuelve una lista de cuadernillos dado el id del usuario
      *
-     * @param user
+     * @param user id del usuario
      * @return lista de cuadernillos
      */
     @GetMapping("/getCuadernillos")
@@ -135,8 +135,8 @@ public class CuadernilloRest {
     /**
      * Metodo que actualiza el tablero de un cuadernillo dado su nombre
      *
-     * @Param nombre
-     * @Param tablero
+     * @Param nombre nombre del cuadernillo
+     * @Param tablero tablero
      * @return lista de cuadernillos
      */
     @PostMapping("/updateTablero")
@@ -147,9 +147,9 @@ public class CuadernilloRest {
     /**
      * Metodo que actualiza los booleanos de un cuadernillo dado su nombre
      *
-     * @Param nombre
-     * @param publico
-     * @param editable
+     * @Param nombre nombre del cuadernillo
+     * @param publico  publico del cuadernillo
+     * @param editable editable del cuadernillo
      * @return lista de cuadernillos
      */
     @PostMapping("/updateBooleans")

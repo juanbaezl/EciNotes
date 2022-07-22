@@ -24,8 +24,8 @@ public class UsuarioRest {
     /**
      * Metodo que devuelve una Usuario dado su username y password
      *
-     * @param username
-     * @param password
+     * @param username username del usuario
+     * @param password password del usuario
      * @return String con el json del Usuario
      */
     @PostMapping("/login")
@@ -39,7 +39,7 @@ public class UsuarioRest {
      * Metodo que devuelve una lista de Usuarios que no son el usuario con el id
      * dado
      *
-     * @param is
+     * @param id id del usuario que no queremos que se muestre en la lista
      * @return Lista de usuarios
      */
     @GetMapping("/users")

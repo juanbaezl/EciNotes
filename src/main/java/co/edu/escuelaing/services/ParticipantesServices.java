@@ -29,7 +29,7 @@ public class ParticipantesServices {
     /**
      * Metodo que crea un participante
      * 
-     * @param participante entidad del participante a crear
+     * @param participantes entidad del participante a crear
      * @return Participante creado
      */
     public Participantes create(Participantes participantes) {
@@ -48,7 +48,7 @@ public class ParticipantesServices {
     /**
      * Metodo que devuelve un participante dado su id
      * 
-     * @param id
+     * @param id id del participante a buscar
      * @return Participante
      */
     public Optional<Participantes> getCuadernilloById(Long id) {
@@ -59,8 +59,8 @@ public class ParticipantesServices {
      * Metodo que crea los participantes de un cuadernillo dados sus nombres y el
      * nombre del cuadernillo
      * 
-     * @param usernames   lista con los nombres de los participantes
-     * @param cuadernillo nombre del cuadernillo
+     * @param usernames          lista con los nombres de los participantes
+     * @param nombre_cuadernillo nombre del cuadernillo
      * @return Lista de participantes creados
      */
     public List<Participantes> createByList(List<String> usernames, String nombre_cuadernillo) {

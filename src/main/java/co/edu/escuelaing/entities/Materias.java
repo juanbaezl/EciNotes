@@ -26,8 +26,9 @@ public class Materias implements Serializable {
     /**
      * Constructor de la clase Materias
      *
-     * @param id
-     * @param nombre
+     * @param id     Long id de la materia
+     * @param nombre String nombre de la materia
+     *
      */
     public Materias(Long id, String nombre) {
         this.id = id;
@@ -46,7 +47,8 @@ public class Materias implements Serializable {
     /**
      * Metodo setter id de la clase Materias
      * 
-     * @param id the id to set
+     * @param id el id a setear
+     *
      */
     public void setId(Long id) {
         this.id = id;
@@ -55,7 +57,7 @@ public class Materias implements Serializable {
     /**
      * Metodo getter nombre de la clase Materias
      * 
-     * @return the nombre
+     * @return nombre
      */
     public String getNombre() {
         return nombre;
@@ -64,7 +66,7 @@ public class Materias implements Serializable {
     /**
      * Metodo setter nombre de la clase Materias
      * 
-     * @param nombre the nombre to set
+     * @param nombre el nombre a settear
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;

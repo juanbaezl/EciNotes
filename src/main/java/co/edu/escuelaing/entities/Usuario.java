@@ -35,11 +35,11 @@ public class Usuario implements Serializable {
     /**
      * Constructor de la clase Usuario
      *
-     * @param id
-     * @param username
-     * @param passwd
-     * @param nombre
-     * @param programa
+     * @param id       Long id del usuario
+     * @param username String username del usuario
+     * @param passwd   String contraseña del usuario
+     * @param nombre   String nombre del usuario
+     * @param programa String programa del usuario
      */
     public Usuario(Long id, String username, String passwd, String nombre, String programa) {
         this.id = id;

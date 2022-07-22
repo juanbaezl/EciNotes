@@ -11,7 +11,8 @@ public class WebSiteController {
     /**
      * Metodo que inicia el servidor
      * 
-     * @param args
+     * @param args argumentos de entrada
+     *
      */
     public static void main(String[] args) {
         SpringApplication.run(WebSiteController.class, args);

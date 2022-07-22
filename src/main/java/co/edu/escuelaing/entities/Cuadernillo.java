@@ -48,13 +48,14 @@ public class Cuadernillo implements Serializable {
     /**
      * Constructor de la clase Cuadernillo
      *
-     * @param id
-     * @param administrador
-     * @param nombre
-     * @param tablero
-     * @param publico
-     * @param editable
-     * @param materias
+     * @param id            Long id del cuadernillo
+     * @param administrador Usuario administrador del cuadernillo
+     * @param nombre        String nombre del cuadernillo
+     * @param tablero       String tablero del cuadernillo
+     * @param publico       boolean indica si el cuadernillo es publico o no
+     * @param editable      boolean indica si el cuadernillo es editable o no
+     * @param materias      Materias materia del cuadernillo
+     * 
      */
     public Cuadernillo(Long id, Usuario administrador, String nombre, String tablero, boolean publico, boolean editable,
             Materias materias) {
@@ -70,12 +71,13 @@ public class Cuadernillo implements Serializable {
     /**
      * Constructor de la clase Cuadernillo
      *
-     * @param administrador
-     * @param nombre
-     * @param tablero
-     * @param publico
-     * @param editable
-     * @param materias
+     * @param administrador Usuario administrador del cuadernillo
+     * @param nombre        String nombre del cuadernillo
+     * @param tablero       String tablero del cuadernillo
+     * @param publico       boolean indica si el cuadernillo es publico o no
+     * @param editable      boolean indica si el cuadernillo es editable o no
+     * @param materias      Materias materia del cuadernillo
+     * 
      */
     public Cuadernillo(Usuario administrador, String nombre, String tablero, boolean publico, boolean editable,
             Materias materias) {
@@ -99,7 +101,8 @@ public class Cuadernillo implements Serializable {
     /**
      * Metodo setter id de la clase Cuadernillo
      *
-     * @param id
+     * @param id Long id del cuadernillo
+     * 
      */
     public void setId(Long id) {
         this.id = id;
@@ -109,6 +112,7 @@ public class Cuadernillo implements Serializable {
      * Metodo getter administrador de la clase Cuadernillo
      *
      * @return administrador
+     * 
      */
     public Usuario getAdministrador() {
         return administrador;
@@ -117,7 +121,8 @@ public class Cuadernillo implements Serializable {
     /**
      * Metodo setter administrador de la clase Cuadernillo
      *
-     * @param administrador
+     * @param administrador Usuario administrador del cuadernillo
+     * 
      */
     public void setAdministrador(Usuario administrador) {
         this.administrador = administrador;
@@ -127,6 +132,7 @@ public class Cuadernillo implements Serializable {
      * Metodo getter nombre de la clase Cuadernillo
      *
      * @return nombre
+     * 
      */
     public String getNombre() {
         return nombre;
@@ -135,7 +141,7 @@ public class Cuadernillo implements Serializable {
     /**
      * Metodo setter nombre de la clase Cuadernillo
      *
-     * @param nombre
+     * @param nombre String nombre del cuadernillo
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -153,7 +159,8 @@ public class Cuadernillo implements Serializable {
     /**
      * Metodo setter tablero de la clase Cuadernillo
      *
-     * @param tablero
+     * @param tablero String tablero del cuadernillo
+     *
      */
     public void setTablero(String tablero) {
         this.tablero = tablero;
@@ -171,7 +178,7 @@ public class Cuadernillo implements Serializable {
     /**
      * Metodo setter publico de la clase Cuadernillo
      *
-     * @param publico
+     * @param publico boolean indica si el cuadernillo es publico o no
      */
     public void setPublico(boolean publico) {
         this.publico = publico;
@@ -189,7 +196,8 @@ public class Cuadernillo implements Serializable {
     /**
      * Metodo setter editable de la clase Cuadernillo
      *
-     * @param editable
+     * @param editable boolean indica si el cuadernillo es editable o no
+     *
      */
     public void setEditable(boolean editable) {
         this.editable = editable;
@@ -207,7 +215,7 @@ public class Cuadernillo implements Serializable {
     /**
      * Metodo setter materias de la clase Cuadernillo
      *
-     * @param materias
+     * @param materias Materias materia del cuadernillo
      */
     public void setMaterias(Materias materias) {
         this.materias = materias;
