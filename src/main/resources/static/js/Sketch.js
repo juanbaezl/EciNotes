@@ -398,7 +398,7 @@ class Board extends React.Component {
 
   handleChangePublico(event) {
     if (!this.state.participante) {
-      this.setState({ publico: event.target.checked });
+      this.setState({ public: event.target.checked });
     }
   }
 

@@ -17,27 +17,6 @@ import co.edu.escuelaing.entities.Cuadernillo;
 public interface CuadernilloRepo extends JpaRepository<Cuadernillo, Long> {
 
         /**
-         * Metodo que inserta un cuadernillo en la base de datos de forma nativa
-         *
-         * @param administrador
-         * @param nombre
-         * @param tablero
-         * @param materias
-         * @param publico
-         * @param editable
-         */
-        @Modifying
-        @Query(value = "insert into Cuadernillo (editable, nombre, publico, tablero, administrador, materias) VALUES (:editable, :nombre, :publico, :tablero, :administrador, :materias)", nativeQuery = true)
-        @Transactional
-        void saveByArguments(
-                        @Param("administrador") long administrador,
-                        @Param("nombre") String nombre,
-                        @Param("tablero") String tablero,
-                        @Param("publico") boolean publico,
-                        @Param("editable") boolean editable,
-                        @Param("materias") long materias);
-
-        /**
          * Metodo que obtiene un cuadernillo dado su id de la base de datos
          *
          * @param id
