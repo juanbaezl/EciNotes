@@ -1,4 +1,11 @@
+/**
+ * Clase de NavBarText (vista del home)
+ */
 class NavBarText extends React.Component {
+  /**
+   * Constructor de NavBarText
+   * @param {*} props
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -13,16 +20,27 @@ class NavBarText extends React.Component {
     this.UNSAFE_componentWillMount = this.UNSAFE_componentWillMount.bind(this);
   }
 
+  /**
+   * Accion de click en una zona
+   * @param {*} num de la zona a la que se va a redireccionar
+   */
   zonaClick(num) {
     this.setState({ zona: num });
   }
 
+  /**
+   * Accion de click en el boton de logout
+   * @param {*} event evento de click
+   */
   salirClick(event) {
     sessionStorage.setItem("log", false);
     window.location.href = "/index.html";
     event.preventDefault();
   }
 
+  /**
+   * Renderiza el componente antes de ser montado
+   */
   UNSAFE_componentWillMount() {
     if (sessionStorage.getItem("log") == "true") {
       var href = window.location.href;
@@ -38,13 +56,26 @@ class NavBarText extends React.Component {
       window.location.href = "/index.html";
     }
   }
+
+  /**
+   * Accion de click en el boton de crear cuadernillo
+   */
   openModal() {
     this.setState({ dialog: true });
   }
+
+  /**
+   * Maneja el cambio en el select de materias
+   * @param {*} event
+   */
   handleMateria(event) {
     this.setState({ filter: event.target.value });
   }
 
+  /**
+   * Renderiza el componente
+   * @returns Componente NavBarText
+   */
   render() {
     switch (this.state.zona) {
       case 1:

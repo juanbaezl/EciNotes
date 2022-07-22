@@ -1,4 +1,11 @@
+/**
+ * Clase de Cuadernillo (vista de las tarjetas de los cuadernillos)
+ */
 class Cuadernillo extends React.Component {
+  /**
+   * Constructor de la clase
+   * @param {*} props
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -12,11 +19,19 @@ class Cuadernillo extends React.Component {
     this.redireccion = this.redireccion.bind(this);
   }
 
+  /**
+   * Accion de redireccion hacia el sketch que se ejecuta al hacer click en un cuadernillo
+   * @param {*} nombre Nombre del cuadernillo a ser redireccionado
+   */
   redireccion(nombre) {
     sessionStorage.setItem("tablero", nombre);
     window.location.href = "/tablero.html";
   }
 
+  /**
+   * Obtiene los cuadernillos en los que participa un usuario
+   * @param {*} user
+   */
   getCuadernillos(user) {
     if (user) {
       fetch(
@@ -42,6 +57,9 @@ class Cuadernillo extends React.Component {
     }
   }
 
+  /**
+   * Construye la vista de los cuadernillos
+   */
   construccion() {
     this.setState({ cuaderno: [] });
     if (this.props.filter != -1) {
@@ -67,18 +85,32 @@ class Cuadernillo extends React.Component {
     }
   }
 
+  /**
+   * Renderiza el componente antes de que se muestre
+   */
   UNSAFE_componentWillMount() {
     this.getCuadernillos(this.props.user);
   }
 
+  /**
+   * Marca el estado como cargado al montar el componente
+   */
   componentDidMount() {
     this.setState({ isLoaded: true });
   }
 
+  /**
+   * Renderiza el componente cuando se cambian los props de llamado
+   * @param {*} nextProps Siguientes props
+   */
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.getCuadernillos(nextProps.user);
   }
 
+  /**
+   * Renderiza el componente
+   * @returns Retorna el componente
+   */
   render() {
     if (this.state.isLoaded) {
       return <div className="galeria">{this.state.cuaderno}</div>;

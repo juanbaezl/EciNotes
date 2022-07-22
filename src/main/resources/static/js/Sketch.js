@@ -10,6 +10,9 @@ let draw = true;
 let info = null;
 let socket;
 
+/**
+ * Funcion que trae el tablero a pintar
+ */
 async function getTablero() {
   await fetch("/api/cuadernillo/getTablero?nombre=" + tablero, {
     method: "GET",
@@ -38,6 +41,10 @@ async function getTablero() {
     });
 }
 
+/**
+ * Funcion que guarda el tablero en la base de datos
+ * @param {*} tableroC Tablero a guardar
+ */
 function save(tableroC) {
   var formData = new FormData();
   formData.append("nombre", tablero);
@@ -48,6 +55,12 @@ function save(tableroC) {
   });
 }
 
+/**
+ * Funcion que ejecuta la colaboracion en tiempo real
+ * (En caso de querer usar con la memoria del servidor usar el fetch,
+ * en caso de usar con la memoria local usar el stompClient descomentandolo y
+ * cambiar el socket por el stompClient al enviar el mensaje)
+ */
 async function stomp() {
   await fetch("/api/cuadernillo/conexion?nombre=" + tablero, {
     method: "GET",
@@ -105,6 +118,10 @@ async function stomp() {
   // });
 }
 
+/**
+ * Funcion que agrega un objeto al tablero
+ * @param {*} msg mensaje que contiene el objeto a agregar
+ */
 function addObject(msg) {
   fabric.util.enlivenObjects([msg], function (objects) {
     objects.forEach(function (o) {
@@ -132,12 +149,20 @@ function addObject(msg) {
   canvas.renderAll();
 }
 
+/**
+ * Funcion que elimina un objeto del tablero
+ * @param {*} msg mensaje que contiene el objeto a eliminar
+ */
 function deleteObject(msg) {
   filtObjects(msg.id).forEach(function (objFilt) {
     canvas.remove(objFilt);
   });
 }
 
+/**
+ * Funcion que cambia el texto de un objeto tipo itext
+ * @param {*} msg mensaje que contiene el objeto a cambiar
+ */
 function changeText(msg) {
   filtObjects(msg.id).forEach(function (objFilt) {
     objFilt.set("text", msg.target.text);
@@ -145,6 +170,11 @@ function changeText(msg) {
   });
 }
 
+/**
+ * Funcion que envia el mensaje al resto de usuarios conectados
+ * (En caso de querer usar con la memoria del servidor usar el stompClient con la funcion send)
+ * @param {*} msg mensaje a enviar
+ */
 function message(msg) {
   var formData = new FormData();
   formData.append("hub", tablero);
@@ -171,6 +201,11 @@ function message(msg) {
   );
 }
 
+/**
+ * Funcion que filtra los objetos con el id indicado
+ * @param {*} id a filtrar
+ * @returns objetos filtrados
+ */
 function filtObjects(id) {
   var objectsAll = canvas.getObjects();
   return objectsAll.filter(function (obj) {
@@ -178,6 +213,10 @@ function filtObjects(id) {
   });
 }
 
+/**
+ * Funcion que envia el mensaje de pintado al resto de usuarios conectados
+ * @param {*} e evento que contiene la informacion del apuntador
+ */
 function drawMessage(e) {
   var pointer = canvas.getPointer(e);
   var res = canvas.freeDrawingBrush.convertPointsToSVGPath([
@@ -196,6 +235,10 @@ function drawMessage(e) {
   message(msg);
 }
 
+/**
+ * Funcion que envia el mensaje de objeto tipo itext al resto de usuarios conectados
+ * @param {*} e evento que contiene la informacion del apuntador
+ */
 function drawText(e) {
   var pointer = canvas.getPointer(e);
   var textbox = new fabric.IText("", {
@@ -213,6 +256,10 @@ function drawText(e) {
   message(msg);
 }
 
+/**
+ * Funcion que envia el mensaje del objeto a eliminar al resto de usuarios conectados
+ * @param {*} e evento que contiene la informacion del apuntador
+ */
 function eraseMessage(e) {
   var object = e.target;
   if (object != null) {
@@ -224,7 +271,14 @@ function eraseMessage(e) {
   }
 }
 
+/**
+ * Clase Board (Vista del tablero)
+ */
 class Board extends React.Component {
+  /**
+   * Constructor de la clase Board
+   * @param {*} props
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -254,16 +308,27 @@ class Board extends React.Component {
     this.handleUpdate = this.handleUpdate.bind(this);
   }
 
+  /**
+   * Funcion que maneja el cambio del color del lapiz
+   * @param {*} event evento que contiene el color
+   */
   handleColorChange(event) {
     this.setState({ color: event.target.value });
     canvas.freeDrawingBrush.color = event.target.value;
   }
 
+  /**
+   * Funcion que maneja el cambio de tamaño del lapiz
+   * @param {*} event evento que contiene el tamaño
+   */
   handleSizeChange(event) {
     this.setState({ size: event.target.value });
     canvas.freeDrawingBrush.width = event.target.value;
   }
 
+  /**
+   * Funcion que resetea el CSS de los botones
+   */
   resetCSS() {
     this.setState({
       selectReact: button,
@@ -273,16 +338,25 @@ class Board extends React.Component {
     });
   }
 
+  /**
+   * Metodo que resetea las variables de seleccion
+   */
   resetVars() {
     draw = false;
     text = false;
     erase = false;
   }
 
+  /**
+   * Funcion que redirecciona al usuario al home
+   */
   redireccionHome() {
     window.location.href = "/home.html";
   }
 
+  /**
+   * Funcion que prepara el tablero para que permita pintar al usuario
+   */
   draw() {
     canvas.defaultCursor = "crosshair";
     canvas.hoverCursor = "crosshair";
@@ -292,6 +366,9 @@ class Board extends React.Component {
     this.setState({ drawReact: button + " active" });
   }
 
+  /**
+   * Funcion que prepara el tablero para que permita borrar al usuario
+   */
   erase() {
     canvas.defaultCursor = "crosshair";
     canvas.hoverCursor = "pointer";
@@ -301,6 +378,9 @@ class Board extends React.Component {
     this.setState({ eraseReact: button + " active" });
   }
 
+  /**
+   * Funcion que prepara el tablero para que permita seleccionar al usuario
+   */
   select() {
     canvas.defaultCursor = "default";
     canvas.hoverCursor = "default";
@@ -309,6 +389,9 @@ class Board extends React.Component {
     this.setState({ selectReact: button + " active" });
   }
 
+  /**
+   * Funcion que prepara el tablero para que permita escribir al usuario
+   */
   text() {
     canvas.defaultCursor = "text";
     canvas.hoverCursor = "text";
@@ -318,6 +401,9 @@ class Board extends React.Component {
     this.setState({ textReact: button + " active" });
   }
 
+  /**
+   * Funcion que prepara el tablero
+   */
   componentDidMount() {
     var w = screen.width - 80;
     var h = screen.height - 120;
@@ -387,6 +473,9 @@ class Board extends React.Component {
     });
   }
 
+  /**
+   * Funcion que prepara el modal
+   */
   async prepareModal() {
     await getTablero();
     this.setState({
@@ -396,32 +485,52 @@ class Board extends React.Component {
     });
   }
 
+  /**
+   * Funcion que maneja el cambio del checkbox publico
+   * @param {*} event evento que contiene el checkbox
+   */
   handleChangePublico(event) {
     if (!this.state.participante) {
       this.setState({ public: event.target.checked });
     }
   }
 
+  /**
+   * Funcion que maneja el cambio del checkbox editable
+   * @param {*} event evento que contiene el checkbox
+   */
   handleChangeEditable(event) {
     if (!this.state.participante) {
       this.setState({ editable: event.target.checked });
     }
   }
 
+  /**
+   * Funcion que abre el modal
+   */
   openModal() {
     this.setState({ show: true });
   }
 
+  /**
+   * Funcion que cierra el modal
+   */
   closeModal() {
     this.setState({ show: false });
   }
 
+  /**
+   * Funcion que renderiza el componente antes de ser montado
+   */
   UNSAFE_componentWillMount() {
     if (sessionStorage.getItem("log") != "true") {
       window.location.href = "/index.html";
     }
   }
 
+  /**
+   * Funcion que maneja el click al guardar informacion
+   */
   handleUpdate() {
     var formData = new FormData();
     formData.append("nombre", tablero);
@@ -437,6 +546,10 @@ class Board extends React.Component {
     message(JSON.stringify(build));
   }
 
+  /**
+   * Renderiza el componente
+   * @returns Componente Board
+   */
   render() {
     return (
       <div>

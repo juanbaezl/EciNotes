@@ -1,4 +1,11 @@
+/**
+ * Clase Modal (vista del modal al hacer click en el boton de crear cuadernillo)
+ */
 class Modal extends React.Component {
+  /**
+   * Constructor de la clase
+   * @param {*} props
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -22,6 +29,9 @@ class Modal extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
   }
 
+  /**
+   * Funcion que redirecciona al tablero
+   */
   redireccionTablero() {
     var w = screen.width - 80;
     var h = screen.height - 120;
@@ -35,6 +45,10 @@ class Modal extends React.Component {
     this.fetchData(JSON.stringify(canvas.toJSON()));
   }
 
+  /**
+   * Funcion que crea el cuadernillo y redirige al tablero
+   * @param {*} tablero tablero a crear
+   */
   fetchData(tablero) {
     var formData = new FormData();
     formData.append("tablero", tablero);
@@ -57,25 +71,49 @@ class Modal extends React.Component {
     });
   }
 
+  /**
+   * Funcion que cierra el modal
+   */
   closeModal() {
     this.setState({ show: false });
   }
 
+  /**
+   * Funcion que maneja el cambio del nombre del cuadernillo
+   * @param {*} event evento que se produce al cambiar el nombre
+   */
   handleChangeNombre(event) {
     this.setState({ nombreCuadernillo: event.target.value });
   }
 
+  /**
+   * Funcion que maneja el nombre de la materia
+   * @param {*} event evento que se produce al cambiar la materia
+   */
   handleChangeMateria(event) {
     this.setState({ materia: event.target.value });
   }
 
+  /**
+   * Funcion que maneja el cambio del checkbox de publico
+   * @param {*} event evento que se produce al cambiar el checkbox
+   */
   handleChangePublico(event) {
     this.setState({ publico: event.target.checked });
   }
 
+  /**
+   * Funcion que maneja el cambio del checkbox de editable
+   * @param {*} event evento que se produce al cambiar el checkbox
+   */
   handleChangeEditable(event) {
     this.setState({ editable: event.target.checked });
   }
+
+  /**
+   * Funcion que elimina un participante del cuadernillo
+   * @param {*} value valor del participante a eliminar
+   */
   handleDelete(value) {
     var optionsFunc = this.state.opt.concat(
       <option key={value} value={value}>
@@ -95,6 +133,10 @@ class Modal extends React.Component {
     });
   }
 
+  /**
+   * Funcion que maneja el click en un participante
+   * @param {*} event evento que se produce al hacer click en un participante
+   */
   handleClickParticipante(event) {
     var value = event.target.value;
     var label = (
@@ -126,6 +168,9 @@ class Modal extends React.Component {
     });
   }
 
+  /**
+   * Funcion que desplega los nombres de los participantes posibles a invitar
+   */
   desplegarNombres() {
     var optFunc = [];
     fetch("/api/usuario/users?id=" + sessionStorage.getItem("id"), {
@@ -144,10 +189,17 @@ class Modal extends React.Component {
     this.setState({ opt: optFunc });
   }
 
+  /**
+   * Funcion que renderiza el componente antes de que se monte el componente
+   */
   UNSAFE_componentWillMount() {
     this.desplegarNombres();
   }
 
+  /**
+   * Funcion que renderiza el componente al recibir nuevos componentes
+   * @param {*} nextProps
+   */
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.show !== this.state.show) {
       this.setState({
@@ -156,6 +208,10 @@ class Modal extends React.Component {
     }
   }
 
+  /**
+   * Renderiza el componente
+   * @returns Componente Modal
+   */
   render() {
     if (this.state.show) {
       return (
