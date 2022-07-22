@@ -1,6 +1,7 @@
 package co.edu.escuelaing.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -17,12 +18,20 @@ import co.edu.escuelaing.entities.Materias;
 import co.edu.escuelaing.entities.Participantes;
 import co.edu.escuelaing.entities.Usuario;
 import co.edu.escuelaing.repository.CuadernilloRepo;
+import co.edu.escuelaing.repository.MateriasRepo;
 import co.edu.escuelaing.repository.ParticipantesRepo;
+import co.edu.escuelaing.repository.UsuarioRepo;
 
 public class CuadernilloServicesTest {
 
     @Mock
     private CuadernilloRepo cuadernilloRepo;
+
+    @Mock
+    private UsuarioRepo usuarioRepo;
+
+    @Mock
+    private MateriasRepo materiasRepo;
 
     @Mock
     private ParticipantesRepo participantesRepo;
@@ -52,6 +61,15 @@ public class CuadernilloServicesTest {
 
     @Test
     void testCreate() {
+        when(cuadernilloRepo.save(any(Cuadernillo.class))).thenReturn(cuadernillo);
+        when(usuarioRepo.findById(Long.valueOf(0))).thenReturn(Optional.of(usuario));
+        when(materiasRepo.findById(Long.valueOf(0))).thenReturn(Optional.of(materia));
+        assertEquals(cuadernilloServices.create(Long.valueOf(0), "CuadernilloPrueba", "", true, true,
+                Long.valueOf(0)), cuadernillo);
+    }
+
+    @Test
+    void testCreate2() {
         when(cuadernilloRepo.save(cuadernillo)).thenReturn(cuadernillo);
         assertEquals(cuadernilloServices.create(cuadernillo), cuadernillo);
     }

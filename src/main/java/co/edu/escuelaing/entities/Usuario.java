@@ -25,10 +25,22 @@ public class Usuario implements Serializable {
     @Column(name = "programa", nullable = false)
     private String programa;
 
+    /**
+     * Constructor de la clase Usuario
+     */
     public Usuario() {
 
     }
 
+    /**
+     * Constructor de la clase Usuario
+     *
+     * @param id
+     * @param username
+     * @param passwd
+     * @param nombre
+     * @param programa
+     */
     public Usuario(Long id, String username, String passwd, String nombre, String programa) {
         this.id = id;
         this.username = username;
@@ -37,46 +49,101 @@ public class Usuario implements Serializable {
         this.programa = programa;
     }
 
+    /**
+     * Metodo getter id de la clase Usuario
+     *
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Metodo setter id de la clase Usuario
+     *
+     * @param id the id to set
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Metodo getter username de la clase Usuario
+     *
+     * @return the username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Metodo setter username de la clase Usuario
+     *
+     * @param username the username to set
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * Metodo getter passwd de la clase Usuario
+     *
+     * @return the passwd
+     */
     public String getPasswd() {
         return passwd;
     }
 
+    /**
+     * Metodo setter passwd de la clase Usuario
+     *
+     * @param passwd the passwd to set
+     */
     public void setPasswd(String passwd) {
         this.passwd = passwd;
     }
 
+    /**
+     * Metodo getter nombre de la clase Usuario
+     *
+     * @return the nombre
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     * Metodo setter nombre de la clase Usuario
+     *
+     * @param nombre the nombre to set
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     * Metodo getter programa de la clase Usuario
+     *
+     * @return the programa
+     */
     public String getPrograma() {
         return programa;
     }
 
+    /**
+     * Metodo setter programa de la clase Usuario
+     *
+     * @param programa the programa to set
+     */
     public void setPrograma(String programa) {
         this.programa = programa;
     }
 
+    /**
+     * Metodo toString de la clase Usuario
+     *
+     * @return the toString
+     */
     @Override
     public String toString() {
         return "{\"id\":\"" + id + "\",\"name\":\"" + nombre + "\"}";

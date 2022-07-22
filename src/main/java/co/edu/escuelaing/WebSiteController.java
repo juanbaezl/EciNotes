@@ -8,6 +8,11 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = { "co.edu.escuelaing" })
 public class WebSiteController {
 
+    /**
+     * Metodo que inicia el servidor
+     * 
+     * @param args
+     */
     public static void main(String[] args) {
         SpringApplication.run(WebSiteController.class, args);
     }

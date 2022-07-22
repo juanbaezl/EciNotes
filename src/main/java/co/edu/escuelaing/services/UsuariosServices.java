@@ -15,21 +15,40 @@ public class UsuariosServices {
     @Autowired
     private UsuarioRepo usuarioRepo;
 
-    public UsuariosServices() {
-    }
-
+    /**
+     * Metodo que obtiene todos los usuarios
+     */
     public List<Usuario> getAllUsers() {
         return usuarioRepo.findAll();
     }
 
+    /**
+     * Metodo que obtiene un usuario dado su id
+     * 
+     * @param id
+     * @return Usuario
+     */
     public Optional<Usuario> getUserById(Long id) {
         return usuarioRepo.findById(id);
     }
 
+    /**
+     * Metodo que obtiene un usuario dado su username y password
+     * 
+     * @param username
+     * @param password
+     * @return Usuario opcional en caso de existir
+     */
     public Optional<Usuario> getUserByNamePasswd(String username, String passwd) {
         return usuarioRepo.findByName(username, passwd);
     }
 
+    /**
+     * Metodo que obtiene los usuarios diferentes al id dado
+     * 
+     * @param id
+     * @return Lista de usuarios
+     */
     public List<Usuario> getAllUsersExceptList(Long id) {
         return usuarioRepo.getUsersMinusId(id);
     }

@@ -21,6 +21,13 @@ public class UsuarioRest {
     @Autowired
     private UsuariosServices usuarioServices;
 
+    /**
+     * Metodo que devuelve una Usuario dado su username y password
+     *
+     * @param username
+     * @param password
+     * @return String con el json del Usuario
+     */
     @PostMapping("/login")
     private String getUserByNamePasswd(@PathParam("name") String name,
             @PathParam("passwd") String passwd) {
@@ -28,6 +35,13 @@ public class UsuarioRest {
         return user.isPresent() ? user.get().toString() : "{}";
     }
 
+    /**
+     * Metodo que devuelve una lista de Usuarios que no son el usuario con el id
+     * dado
+     *
+     * @param is
+     * @return Lista de usuarios
+     */
     @GetMapping("/users")
     private List<Usuario> getAllUsersExceptList(@PathParam("id") Long id) {
         return usuarioServices.getAllUsersExceptList(id);

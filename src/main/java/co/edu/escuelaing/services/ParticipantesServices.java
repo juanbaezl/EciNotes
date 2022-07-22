@@ -26,18 +26,43 @@ public class ParticipantesServices {
     @Autowired
     private UsuarioRepo usuarioRepo;
 
+    /**
+     * Metodo que crea un participante
+     * 
+     * @param participante entidad del participante a crear
+     * @return Participante creado
+     */
     public Participantes create(Participantes participantes) {
         return participantesRepo.save(participantes);
     }
 
+    /**
+     * Metodo que devuelve todos los participantes
+     * 
+     * @return Lista de participantes
+     */
     public List<Participantes> getAllCadernillos() {
         return participantesRepo.findAll();
     }
 
+    /**
+     * Metodo que devuelve un participante dado su id
+     * 
+     * @param id
+     * @return Participante
+     */
     public Optional<Participantes> getCuadernilloById(Long id) {
         return participantesRepo.findById(id);
     }
 
+    /**
+     * Metodo que crea los participantes de un cuadernillo dados sus nombres y el
+     * nombre del cuadernillo
+     * 
+     * @param usernames   lista con los nombres de los participantes
+     * @param cuadernillo nombre del cuadernillo
+     * @return Lista de participantes creados
+     */
     public List<Participantes> createByList(List<String> usernames, String nombre_cuadernillo) {
         ArrayList<Participantes> res = new ArrayList<>();
         try {
