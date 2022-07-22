@@ -34,10 +34,6 @@ public class CuadernilloServices {
         return cuadernilloRepo.findAll();
     }
 
-    public void deleteCuadernillo(Cuadernillo cuadernillo) {
-        cuadernilloRepo.delete(cuadernillo);
-    }
-
     public Optional<Cuadernillo> getCuadernilloById(Long id) {
         return cuadernilloRepo.findById(id);
     }

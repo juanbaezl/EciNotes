@@ -18,16 +18,8 @@ public class UsuariosServices {
     public UsuariosServices() {
     }
 
-    public Usuario create(Usuario usuario) {
-        return usuarioRepo.save(usuario);
-    }
-
     public List<Usuario> getAllUsers() {
         return usuarioRepo.findAll();
-    }
-
-    public void deleteUser(Usuario usuario) {
-        usuarioRepo.delete(usuario);
     }
 
     public Optional<Usuario> getUserById(Long id) {

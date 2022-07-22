@@ -1,5 +1,6 @@
 package co.edu.escuelaing.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,23 +34,23 @@ public class ParticipantesServices {
         return participantesRepo.findAll();
     }
 
-    public void deleteCuadernillo(Participantes participantes) {
-        participantesRepo.delete(participantes);
-    }
-
     public Optional<Participantes> getCuadernilloById(Long id) {
         return participantesRepo.findById(id);
     }
 
-    public void createByList(List<String> usernames, String nombre_cuadernillo) {
+    public List<Participantes> createByList(List<String> usernames, String nombre_cuadernillo) {
+        ArrayList<Participantes> res = new ArrayList<>();
         try {
             Cuadernillo cuadernillo = cuadernilloRepo.findByName(nombre_cuadernillo).get();
             for (String username : usernames) {
                 Usuario usuario = usuarioRepo.findByUsername(username).get();
-                create(new Participantes(usuario, cuadernillo));
+                Participantes participantes = new Participantes(usuario, cuadernillo);
+                create(participantes);
+                res.add(participantes);
             }
         } catch (Exception e) {
             System.out.println(e);
         }
+        return res;
     }
 }
