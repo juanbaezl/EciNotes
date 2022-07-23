@@ -17,9 +17,9 @@ El proyecto lo puede ver en el siguiente link:
 
 ### LOC/h
 
-Para este taller se hicieron 936 líneas de código, en 52 horas.
+Para este taller se hicieron 2533 líneas de código, en 80 horas.
 
-**18 LOC/h**
+**31.66 LOC/h**
 
 ### Prerrequisitos
 
@@ -43,6 +43,22 @@ $ java -jar target/ECINotes-1.0.jar
 ```
 
 Este le iniciará la página en su localhost con puerto 5000.
+
+## Ejecutar Test
+
+Para ejecutar los test, en la consola se debe ejecutar el siguiente comando:
+
+```
+mvn test
+```
+
+### Explicación test
+
+En cuanto a las pruebas, se tienen prubeas para cargar el contexto de la aplicación, y prubas por cada servicio en el proyecto.
+
+### Reporte de Pruebas
+
+![Reporte de Pruebas](img/report_test.png)
 
 ## Documentación
 
