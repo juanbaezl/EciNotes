@@ -20,6 +20,7 @@ import com.azure.messaging.webpubsub.models.GetClientAccessTokenOptions;
 import com.azure.messaging.webpubsub.models.WebPubSubContentType;
 
 import co.edu.escuelaing.entities.Cuadernillo;
+import co.edu.escuelaing.entities.Usuario;
 import co.edu.escuelaing.services.CuadernilloServices;
 import co.edu.escuelaing.services.ParticipantesServices;
 
@@ -156,5 +157,50 @@ public class CuadernilloRest {
     private void updateBooleans(@PathParam("nombre") String nombre, @PathParam("publico") boolean publico,
             @PathParam("editable") boolean editable) {
         cuadernilloServices.updateBooleans(nombre, publico, editable);
+    }
+
+    /**
+     * Metodo que obtiene los participantes de un cuadernillo dado su nombre
+     *
+     * @Param nombre nombre del cuadernillo
+     * @return lista de Usuarios
+     */
+    @GetMapping("/getParticipantes")
+    private List<Usuario> getParticipantes(@PathParam("nombre") String nombre) {
+        return participantesServices.getParticipantesByCuadernillo(nombre);
+    }
+
+    /**
+     * Metodo que obtiene los usuarios no participantes de un cuadernillo dado su
+     * nombre
+     *
+     * @Param nombre nombre del cuadernillo
+     * @return lista de Usuarios
+     */
+    @GetMapping("/GetUsersNotInCuadernillo")
+    private List<Usuario> getUsersNotInCuadernillo(@PathParam("nombre") String nombre) {
+        return participantesServices.getUsuariosNotInCuadernillo(nombre);
+    }
+
+    /**
+     * Metodo que agrega un participante a un cuadernillo dado sus nombres
+     * 
+     * @param nombre  nombre del usuario
+     * @param tablero nombre del tablero
+     */
+    @PostMapping("/saveParticipante")
+    private void saveParticipante(@PathParam("nombre") String nombre, @PathParam("tablero") String tablero) {
+        participantesServices.create(nombre, tablero);
+    }
+
+    /**
+     * Metodo que elimina un participante de un cuadernillo dado sus nombres
+     * 
+     * @param nombre  nombre del usuario
+     * @param tablero nombre del tablero
+     */
+    @PostMapping("/deleteParticipante")
+    private void deleteParticipante(@PathParam("nombre") String nombre, @PathParam("tablero") String tablero) {
+        participantesServices.delete(nombre, tablero);
     }
 }

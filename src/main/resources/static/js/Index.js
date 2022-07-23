@@ -48,6 +48,7 @@ class NameForm extends React.Component {
       .then((data) => {
         if (data.name != undefined) {
           sessionStorage.setItem("name", data.name);
+          sessionStorage.setItem("username", this.state.username);
           sessionStorage.setItem("log", true);
           sessionStorage.setItem("id", data.id);
           window.location.href = "/home.html";

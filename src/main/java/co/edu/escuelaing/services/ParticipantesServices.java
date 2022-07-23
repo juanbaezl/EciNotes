@@ -37,6 +37,34 @@ public class ParticipantesServices {
     }
 
     /**
+     * Metodo que crea un participante con todos sus atributos
+     * 
+     * @param nombre  nombre del participante
+     * @param tablero tablero del participante
+     * @return Participante creado
+     *
+     */
+    public Participantes create(String nombre, String tablero) {
+        Cuadernillo cuadernillo = cuadernilloRepo.findByName(tablero).get();
+        Usuario usuario = usuarioRepo.findByUsername(nombre).get();
+        Participantes participantes = new Participantes(usuario, cuadernillo);
+        return participantesRepo.save(participantes);
+    }
+
+    /**
+     * Metodo que elimina un participante dado su nombre y nombre del cuadernillo
+     * 
+     * @param nombre  nombre del participante
+     * @param tablero nombre del cuadernillo
+     */
+    public void delete(String nombre, String tablero) {
+        Cuadernillo cuadernillo = cuadernilloRepo.findByName(tablero).get();
+        Usuario usuario = usuarioRepo.findByUsername(nombre).get();
+        Participantes participantes = new Participantes(usuario, cuadernillo);
+        participantesRepo.delete(participantes);
+    }
+
+    /**
      * Metodo que devuelve todos los participantes
      * 
      * @return Lista de participantes
@@ -53,6 +81,33 @@ public class ParticipantesServices {
      */
     public Optional<Participantes> getCuadernilloById(Long id) {
         return participantesRepo.findById(id);
+    }
+
+    /**
+     * Metodo que devuelve los usuarios participantes de un cuadernillo dado su
+     * nombre
+     * 
+     * @param nombre nombre del cuadernillo
+     * @return Lista de Usuarios
+     */
+    public List<Usuario> getParticipantesByCuadernillo(String nombre) {
+        return participantesRepo.findUsersByCuadernillo(nombre);
+    }
+
+    /**
+     * Metodo que devuelve los usuarios no participantes de un cuadernillo dado su
+     * nombre
+     * 
+     * @param nombre nombre del cuadernillo
+     * @return Lista de Usuarios
+     */
+    public List<Usuario> getUsuariosNotInCuadernillo(String nombre) {
+        List<Usuario> usuarios = usuarioRepo.findAll();
+        List<Usuario> usuariosIn = getParticipantesByCuadernillo(nombre);
+        for (Usuario usuarioIn : usuariosIn) {
+            usuarios.removeIf(filter -> filter.getId() == usuarioIn.getId());
+        }
+        return usuarios;
     }
 
     /**

@@ -2,6 +2,7 @@ let stompClient;
 let canvas;
 const button = "button";
 const idSession = sessionStorage.getItem("id");
+const username = sessionStorage.getItem("username");
 const tablero = sessionStorage.getItem("tablero");
 let click = false;
 let erase = false;
@@ -292,6 +293,9 @@ class Board extends React.Component {
       editable: false,
       show: false,
       participante: false,
+      opt: [],
+      elegidos: [],
+      labels: [],
     };
     this.handleSizeChange = this.handleSizeChange.bind(this);
     this.handleColorChange = this.handleColorChange.bind(this);
@@ -306,6 +310,10 @@ class Board extends React.Component {
     this.closeModal = this.closeModal.bind(this);
     this.openModal = this.openModal.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
+    this.desplegarNombres = this.desplegarNombres.bind(this);
+    this.getElegidos = this.getElegidos.bind(this);
+    this.handleClickParticipante = this.handleClickParticipante.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   /**
@@ -412,6 +420,8 @@ class Board extends React.Component {
       height: h,
     });
     this.prepareModal();
+    this.getElegidos();
+    this.desplegarNombres();
     stomp();
     if (this.state.editable) {
       canvas.defaultCursor = "crosshair";
@@ -520,9 +530,153 @@ class Board extends React.Component {
   }
 
   /**
+   * Funcion que desplega los nombres de los participantes posibles a invitar
+   */
+  desplegarNombres() {
+    var optFunc = [];
+    fetch("/api/cuadernillo/GetUsersNotInCuadernillo?nombre=" + tablero, {
+      method: "GET",
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        for (let user of data) {
+          if (user.id != idSession) {
+            console.log(user.username);
+            optFunc.push(
+              <option key={user.username} value={user.username}>
+                {user.username}
+              </option>
+            );
+          }
+        }
+      });
+    this.setState({ opt: optFunc });
+  }
+
+  /**
+   * Funcion que construye el label de elegidos
+   * @param {*} usernameFunc username a mostrar
+   * @returns label con el nombre del usuario
+   */
+  labelConstruction(usernameFunc) {
+    return (
+      <div key={usernameFunc}>
+        <button
+          className="deleteButton"
+          onClick={this.handleDelete.bind(this, usernameFunc)}
+        >
+          X
+        </button>
+        <input
+          type="text"
+          key={usernameFunc}
+          value={usernameFunc}
+          className="labelPart"
+          readOnly
+        />
+      </div>
+    );
+  }
+
+  /**
+   * Funcion que getea los usuarios participantes
+   */
+  async getElegidos() {
+    var labelFunc = [];
+    var elegidosFunc = [];
+    await fetch("/api/cuadernillo/getParticipantes?nombre=" + tablero, {
+      method: "GET",
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        for (let user of data) {
+          elegidosFunc.push(user.username);
+          labelFunc.push(this.labelConstruction(user.username));
+        }
+      });
+    await this.setState({ elegidos: elegidosFunc, labels: labelFunc });
+  }
+
+  /**
+   * Funcion que elimina un participante del cuadernillo
+   * @param {*} value valor del participante a eliminar
+   */
+  handleDelete(value) {
+    this.deleteParticipante(value);
+    var optionsFunc = this.state.opt.concat(
+      <option key={value} value={value}>
+        {value}
+      </option>
+    );
+    var removedLabels = this.state.labels.filter((label) => {
+      return label.key != value;
+    });
+    var removedElegidos = this.state.elegidos.filter((elegidos) => {
+      return elegidos != value;
+    });
+    this.setState({
+      opt: optionsFunc,
+      elegidos: removedElegidos,
+      labels: removedLabels,
+    });
+  }
+
+  /**
+   * Funcion que maneja el click en un participante
+   * @param {*} event evento que se produce al hacer click en un participante
+   */
+  handleClickParticipante(event) {
+    var value = event.target.value;
+    this.saveParticipante(value);
+    var label = this.labelConstruction(value);
+    var elegidosFunc = this.state.elegidos.concat([value]);
+    var labelsFunc = this.state.labels.concat([label]);
+    var removed = this.state.opt.filter((option) => {
+      return option.props.value != value;
+    });
+    this.setState({
+      opt: removed,
+      elegidos: elegidosFunc,
+      labels: labelsFunc,
+    });
+  }
+
+  /**
+   * Funcion que guarda un participante en el cuadernillo
+   * @param {*} value nombre del participante a guardar
+   */
+  saveParticipante(value) {
+    fetch(
+      "/api/cuadernillo/saveParticipante?nombre=" +
+        value +
+        "&tablero=" +
+        tablero,
+      {
+        method: "POST",
+      }
+    );
+  }
+
+  /**
+   * Funcion que elimina un participante del cuadernillo
+   * @param {*} value nombre del participante a eliminar
+   */
+  deleteParticipante(value) {
+    fetch(
+      "/api/cuadernillo/deleteParticipante?nombre=" +
+        value +
+        "&tablero=" +
+        tablero,
+      {
+        method: "POST",
+      }
+    );
+  }
+
+  /**
    * Funcion que renderiza el componente antes de ser montado
    */
-  UNSAFE_componentWillMount() {
+  async UNSAFE_componentWillMount() {
     if (sessionStorage.getItem("log") != "true") {
       window.location.href = "/index.html";
     }
@@ -660,6 +814,15 @@ class Board extends React.Component {
                 <h1>{tablero}</h1>
               </div>
               <div className="divSep">
+                <label className="labelDialog">Administrador:</label>
+                <input
+                  type="text"
+                  value={info.administrador.username}
+                  className="labelPart"
+                  readOnly
+                />
+              </div>
+              <div className="divSep">
                 <label className="labelDialog">Publico:</label>
                 <input
                   type="checkbox"
@@ -676,6 +839,18 @@ class Board extends React.Component {
                   checked={this.state.editable}
                   onChange={this.handleChangeEditable}
                 />
+              </div>
+              <div className="divSep">
+                <label className="labelDialog">Participantes: </label>
+                {!this.state.participante ? (
+                  <select onChange={this.handleClickParticipante}>
+                    <option value={-1}>Seleccione</option>
+                    {this.state.opt}
+                  </select>
+                ) : (
+                  <div></div>
+                )}
+                {this.state.labels}
               </div>
               {!this.state.participante ? (
                 <div className="divSep">

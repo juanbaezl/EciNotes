@@ -1,9 +1,11 @@
 package co.edu.escuelaing.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -91,5 +93,30 @@ public class ParticipantesServicesTest {
     void testGetCuadernilloById() {
         when(participantesRepo.findById(Long.valueOf(0))).thenReturn(Optional.of(participante));
         assertEquals(participantesServices.getCuadernilloById(Long.valueOf(0)).get(), participante);
+    }
+
+    @Test
+    void testGetParticipantesByCuadernillo() {
+        when(participantesRepo.findUsersByCuadernillo("CuadernilloPrueba")).thenReturn(
+                Arrays.asList(usuario2));
+        assertEquals(participantesServices.getParticipantesByCuadernillo("CuadernilloPrueba").size(), 1);
+
+    }
+
+    @Test
+    void testGetUsuariosNotInCuadernillo() {
+        when(participantesRepo.findUsersByCuadernillo("CuadernilloPrueba")).thenReturn(
+                new LinkedList<Usuario>(Arrays.asList(usuario3)));
+        when(usuarioRepo.findAll()).thenReturn(new LinkedList<Usuario>(Arrays.asList(usuario2, usuario3)));
+        assertEquals(participantesServices.getUsuariosNotInCuadernillo("CuadernilloPrueba").get(0).getUsername(),
+                "pruebaw");
+    }
+
+    @Test
+    void testCreate2() {
+        when(participantesRepo.save(any(Participantes.class))).thenReturn(participante);
+        when(usuarioRepo.findByUsername("prueba")).thenReturn(Optional.of(usuario));
+        when(cuadernilloRepo.findByName("CuadernilloPrueba")).thenReturn(Optional.of(cuadernillo));
+        assertEquals(participantesServices.create("prueba", "CuadernilloPrueba"), participante);
     }
 }
