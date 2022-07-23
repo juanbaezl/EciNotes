@@ -296,6 +296,7 @@ class Board extends React.Component {
       opt: [],
       elegidos: [],
       labels: [],
+      administrador: "",
     };
     this.handleSizeChange = this.handleSizeChange.bind(this);
     this.handleColorChange = this.handleColorChange.bind(this);
@@ -412,23 +413,30 @@ class Board extends React.Component {
   /**
    * Funcion que prepara el tablero
    */
-  componentDidMount() {
+  async componentDidMount() {
     var w = screen.width - 80;
     var h = screen.height - 120;
     canvas = new fabric.Canvas("canvas", {
       width: w,
       height: h,
     });
-    this.prepareModal();
-    this.getElegidos();
-    this.desplegarNombres();
+    await this.prepareModal();
+    await this.getElegidos();
+    await this.desplegarNombres();
     stomp();
+
     if (this.state.editable) {
       canvas.defaultCursor = "crosshair";
       canvas.hoverCursor = "crosshair";
     } else {
       this.select();
     }
+    var boolean1 = !this.state.elegidos.includes(username);
+    var boolean2 = this.state.administrador != username;
+    if (boolean1 && boolean2 && !this.state.public) {
+      this.redireccionHome();
+    }
+
     canvas.selection = false;
     canvas.freeDrawingBrush.width = this.state.size;
     canvas.on("mouse:down", function (e) {
@@ -491,6 +499,7 @@ class Board extends React.Component {
     this.setState({
       public: info.publico,
       editable: info.editable,
+      administrador: info.administrador.username,
       participante: idSession != info.administrador.id,
     });
   }
@@ -541,7 +550,6 @@ class Board extends React.Component {
       .then((data) => {
         for (let user of data) {
           if (user.id != idSession) {
-            console.log(user.username);
             optFunc.push(
               <option key={user.username} value={user.username}>
                 {user.username}
@@ -561,12 +569,16 @@ class Board extends React.Component {
   labelConstruction(usernameFunc) {
     return (
       <div key={usernameFunc}>
-        <button
-          className="deleteButton"
-          onClick={this.handleDelete.bind(this, usernameFunc)}
-        >
-          X
-        </button>
+        {!this.state.participante ? (
+          <button
+            className="deleteButton"
+            onClick={this.handleDelete.bind(this, usernameFunc)}
+          >
+            X
+          </button>
+        ) : (
+          <div />
+        )}
         <input
           type="text"
           key={usernameFunc}
@@ -817,7 +829,7 @@ class Board extends React.Component {
                 <label className="labelDialog">Administrador:</label>
                 <input
                   type="text"
-                  value={info.administrador.username}
+                  value={this.state.administrador}
                   className="labelPart"
                   readOnly
                 />

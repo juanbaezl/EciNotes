@@ -44,6 +44,8 @@ $ java -jar target/ECINotes-1.0.jar
 
 Este le iniciará la página en su localhost con puerto 5000.
 
+En caso de querer ver el manual de usuario debe ver el siguiente [PowerPoint](./resources/Manual_de_usuario.pptx)
+
 ## Ejecutar Test
 
 Para ejecutar los test, en la consola se debe ejecutar el siguiente comando:
